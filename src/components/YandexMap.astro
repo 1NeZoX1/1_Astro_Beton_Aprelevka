@@ -1,0 +1,15 @@
+---
+import { site } from "@lib/site";
+---
+
+<div class="map-block">
+  <iframe
+    src={site.yandexMapHref}
+    title="Точка завода на Яндекс.Картах"
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+  ></iframe>
+  <a class="button button-outline" href={site.yandexMapHref} target="_blank" rel="noreferrer">
+    Открыть точку на Яндекс.Картах
+  </a>
+</div>

@@ -1,0 +1,17 @@
+---
+import { site } from "@lib/site";
+
+type Props = {
+  productTitle?: string;
+};
+
+const { productTitle = "бетон" } = Astro.props;
+const whatsappText = encodeURIComponent(`Здравствуйте! Хочу заказать ${productTitle}.`);
+---
+
+<div class="contact-buttons">
+  <a class="button button-primary" href="tel:+74950329998">Позвонить</a>
+  <a class="button button-whatsapp" href={`${site.whatsappHref}?text=${whatsappText}`}>WhatsApp</a>
+  <a class="button button-outline" href={site.maxHref}>MAX</a>
+  <button class="button button-disabled" type="button" disabled>Telegram</button>
+</div>

@@ -1,0 +1,28 @@
+---
+import { navItems, site } from "@lib/site";
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark">LBG</span>
+        <span class="brand-text">{site.name}</span>
+      </a>
+      <p>{site.legalName}</p>
+      <p class="muted">{site.priceNote}</p>
+    </div>
+
+    <nav class="footer-nav" aria-label="Навигация в подвале">
+      {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
+      <a href="/politika-konfidentsialnosti/">Политика конфиденциальности</a>
+    </nav>
+
+    <div class="footer-contacts">
+      <a href="tel:+74950329998">{site.phonePrimary}</a>
+      <a href="tel:+74950326040">{site.phoneSecondary}</a>
+      <a href={site.whatsappHref}>WhatsApp: {site.whatsapp}</a>
+      <a href={site.maxHref}>MAX</a>
+    </div>
+  </div>
+</footer>

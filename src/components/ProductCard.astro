@@ -1,0 +1,28 @@
+---
+import { formatPrice, type Product } from "@lib/catalog";
+
+type Props = {
+  product: Product;
+};
+
+const { product } = Astro.props;
+const href = product.categorySlug && product.slug ? `/catalog/${product.categorySlug}/${product.slug}/` : "/catalog/";
+---
+
+<article class="product-card">
+  <a class="product-card-image" href={href} aria-label={`Подробнее: ${product.title}`}>
+    <img src="/images/product-placeholder.svg" alt="" loading="lazy" />
+  </a>
+  <div class="product-card-body">
+    <p class="eyebrow">{product.category}</p>
+    <h3><a href={href}>{product.title}</a></h3>
+    <p>{product.shortDescription}</p>
+    <div class="product-card-footer">
+      <strong class="product-price">{formatPrice(product.price)} ₽/{product.unit}</strong>
+      <div class="card-actions">
+        <a class="button button-small button-outline" href={href}>Подробнее</a>
+        <a class="button button-small button-accent" href="#request">Заказать</a>
+      </div>
+    </div>
+  </div>
+</article>

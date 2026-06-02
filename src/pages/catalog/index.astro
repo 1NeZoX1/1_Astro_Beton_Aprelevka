@@ -1,0 +1,57 @@
+---
+import ProductCard from "@components/ProductCard.astro";
+import RequestForm from "@components/RequestForm.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { categoryPages, getPopularProducts } from "@lib/catalog";
+
+const title = "Каталог бетона и строительных смесей";
+const description =
+  "Каталог бетона с доставкой по Москве и Московской области: категории, карточки товаров, цены и заявка на заказ.";
+const subtitle = "Выберите категорию и оставьте заявку — стоимость доставки рассчитывается индивидуально.";
+const popularProducts = getPopularProducts(12);
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="section-tight">
+    <div class="container">
+      <div class="section-title">
+        <h1>{title}</h1>
+        <p>{subtitle}</p>
+      </div>
+
+      <div class="catalog-category-grid">
+        {categoryPages.map((category) => (
+          <a class="catalog-category-card" href={`/catalog/${category.slug}/`}>
+            <span class="catalog-category-count">{category.products.length}</span>
+            <h2>{category.title}</h2>
+            <p>{category.description}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">Популярные позиции</p>
+        <h2>Часто выбирают</h2>
+        <p>Ниже показана часть каталога. Полный список доступен внутри категорий.</p>
+      </div>
+      <div class="grid grid-3">
+        {popularProducts.map((product) => <ProductCard product={product} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container request-panel">
+      <div class="section-title">
+        <p class="eyebrow">Заявка</p>
+        <h2>Уточнить стоимость бетона</h2>
+        <p>Укажите марку, объем и адрес объекта. Сообщение будет сформировано для WhatsApp.</p>
+      </div>
+      <RequestForm />
+    </div>
+  </section>
+</BaseLayout>

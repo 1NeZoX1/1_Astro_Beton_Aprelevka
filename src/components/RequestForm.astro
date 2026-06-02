@@ -1,0 +1,55 @@
+---
+type Props = {
+  productTitle?: string;
+};
+
+const { productTitle = "" } = Astro.props;
+---
+
+<form class="request-form js-request-form" id="request">
+  <div class="form-grid">
+    <label>
+      <span>Имя</span>
+      <input name="name" autocomplete="name" placeholder="Ваше имя" />
+    </label>
+    <label>
+      <span>Телефон</span>
+      <input name="phone" autocomplete="tel" inputmode="tel" placeholder="+7" required />
+    </label>
+    <label class="form-wide">
+      <span>Что хотите заказать</span>
+      <input name="product" value={productTitle} placeholder="Марка бетона, объем" />
+    </label>
+    <label class="form-wide">
+      <span>Адрес доставки</span>
+      <input name="address" placeholder="Город, улица, объект" />
+    </label>
+    <label class="form-wide">
+      <span>Комментарий</span>
+      <textarea name="comment" rows="4" placeholder="Удобное время, подъезд, пожелания"></textarea>
+    </label>
+  </div>
+  <button class="button button-accent" type="submit">Отправить в WhatsApp</button>
+  <p class="form-note">
+    Форма не отправляет данные на сервер. После нажатия откроется WhatsApp с заполненным текстом заявки.
+  </p>
+</form>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>(".js-request-form").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const text = [
+        "Здравствуйте! Хочу заказать бетон.",
+        `Имя: ${data.get("name") || ""}`,
+        `Телефон: ${data.get("phone") || ""}`,
+        `Товар/объем: ${data.get("product") || ""}`,
+        `Адрес доставки: ${data.get("address") || ""}`,
+        `Комментарий: ${data.get("comment") || ""}`
+      ].join("\n");
+
+      window.location.href = `https://wa.me/79867037424?text=${encodeURIComponent(text)}`;
+    });
+  });
+</script>

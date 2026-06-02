@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="Бетонная смесь">
+  <rect width="640" height="420" fill="#eef2f6"/>
+  <rect x="64" y="256" width="512" height="58" rx="12" fill="#9faab4"/>
+  <path d="M116 250c66-90 330-100 420 0z" fill="#c4ccd4"/>
+  <path d="M160 246c55-42 265-48 330 0z" fill="#d9dee3"/>
+  <rect x="84" y="314" width="472" height="24" fill="#0f2f57"/>
+  <circle cx="170" cy="342" r="22" fill="#f2b705"/>
+  <circle cx="470" cy="342" r="22" fill="#f2b705"/>
+</svg>

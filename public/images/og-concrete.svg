@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="ЛИДЕР БЕТОН ГРУПП">
+  <rect width="1200" height="630" fill="#0f2f57"/>
+  <rect x="72" y="72" width="1056" height="486" rx="28" fill="#ffffff"/>
+  <text x="120" y="190" fill="#0f2f57" font-family="Arial, sans-serif" font-size="74" font-weight="700">ЛИДЕР БЕТОН ГРУПП</text>
+  <text x="120" y="278" fill="#27384a" font-family="Arial, sans-serif" font-size="42">Бетон с доставкой по Москве и области</text>
+  <rect x="120" y="360" width="260" height="72" rx="14" fill="#f2b705"/>
+  <text x="250" y="407" text-anchor="middle" fill="#0f2f57" font-family="Arial, sans-serif" font-size="28" font-weight="700">Каталог и цены</text>
+</svg>

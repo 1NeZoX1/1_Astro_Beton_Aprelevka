@@ -1,0 +1,176 @@
+---
+import ContactButtons from "@components/ContactButtons.astro";
+import PriceTable from "@components/PriceTable.astro";
+import ProductCard from "@components/ProductCard.astro";
+import RequestForm from "@components/RequestForm.astro";
+import YandexMap from "@components/YandexMap.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { categories, categoryPages, getPopularProducts, products } from "@lib/catalog";
+import { faqSchema } from "@lib/schema";
+import { site } from "@lib/site";
+
+const popularProducts = getPopularProducts(6);
+const faqItems = [
+  {
+    question: "Цены указаны с доставкой?",
+    answer: site.priceNote
+  },
+  {
+    question: "Можно ли заказать бетон по Московской области?",
+    answer: "Да, заявки принимаются для объектов в Москве и Московской области. Стоимость доставки рассчитывается индивидуально."
+  },
+  {
+    question: "Как быстро уточнить цену?",
+    answer: "Оставьте заявку через форму, WhatsApp, MAX или позвоните по телефону. Для расчета нужны марка бетона, объем и адрес доставки."
+  }
+];
+---
+
+<BaseLayout title={site.title} description={site.description} structuredData={[faqSchema(faqItems)]}>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">{site.legalName}</p>
+        <h1>{site.title}</h1>
+        <p class="lead">
+          Каталог бетонных смесей, цены за 1 м³ и заявка на поставку бетона от завода.
+          Работаем с объектами в Москве и Московской области.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-accent" href="#prices">Смотреть цены</a>
+          <a class="button button-primary" href="/catalog/">Перейти в каталог</a>
+        </div>
+        <div class="hero-stats" aria-label="Ключевые сведения">
+          <div class="stat"><strong>{products.length}</strong><span>позиций в примере каталога</span></div>
+          <div class="stat"><strong>{categories.length}</strong><span>категорий продукции</span></div>
+          <div class="stat"><strong>1 м³</strong><span>базовая единица цены</span></div>
+        </div>
+      </div>
+      <div class="hero-media">
+        <img src="/images/hero-concrete.svg" alt="Бетонный завод и автобетоносмеситель" loading="eager" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="prices">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">Цены</p>
+        <h2>Прайс на бетон и строительные смеси</h2>
+        <p>После загрузки полного Excel-списка таблица автоматически расширится без ручного создания страниц.</p>
+      </div>
+      <PriceTable products={products} />
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">Категории</p>
+        <h2>Категории продукции</h2>
+      </div>
+      <div class="grid grid-4">
+        {categoryPages.map((category) => (
+          <a class="info-card" href={`/catalog/${category.slug}/`}>
+            <h3>{category.title}</h3>
+            <p>{category.description}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">Популярные позиции</p>
+        <h2>Бетон с доставкой от завода</h2>
+      </div>
+      <div class="grid grid-3">
+        {popularProducts.map((product) => <ProductCard product={product} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container grid grid-3">
+      <article class="info-card">
+        <h3>Понятные цены</h3>
+        <p>В каталоге указана цена за 1 м³ без учета доставки. Итоговый расчет зависит от адреса и объема.</p>
+      </article>
+      <article class="info-card">
+        <h3>Каталог готов к расширению</h3>
+        <p>Товары и страницы каталога генерируются из JSON-данных, поэтому список можно расширять без ручной верстки.</p>
+      </article>
+      <article class="info-card">
+        <h3>Удобная заявка</h3>
+        <p>Форма формирует сообщение и открывает WhatsApp без backend и хранения персональных данных.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container request-panel">
+      <div>
+        <div class="section-title">
+          <p class="eyebrow">Доставка</p>
+          <h2>Расчет доставки индивидуальный</h2>
+          <p>{site.deliveryText}</p>
+        </div>
+        <ContactButtons />
+      </div>
+      <RequestForm />
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">Примеры работ</p>
+        <h2>Галерея-заглушка для будущих фотографий</h2>
+      </div>
+      <div class="grid grid-3">
+        {["Жилой комплекс, Москва", "Частный дом, Подмосковье", "Промышленный объект"].map((title) => (
+          <article class="work-card">
+            <img src="/images/product-placeholder.svg" alt="" loading="lazy" />
+            <div class="work-card-body">
+              <h3>{title}</h3>
+              <p>Район/город и марка бетона будут уточнены после добавления реальных фотографий объекта.</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2">
+      <div>
+        <div class="section-title">
+          <p class="eyebrow">Контакты</p>
+          <h2>Связаться с отделом продаж</h2>
+          <p>{site.phonePrimary}, {site.phoneSecondary}</p>
+        </div>
+        <ContactButtons />
+      </div>
+      <YandexMap />
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">FAQ</p>
+        <h2>Частые вопросы</h2>
+      </div>
+      <div class="grid">
+        {faqItems.map((item) => (
+          <details class="info-card">
+            <summary><strong>{item.question}</strong></summary>
+            <p>{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

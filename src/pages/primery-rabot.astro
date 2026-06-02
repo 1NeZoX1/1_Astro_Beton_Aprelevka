@@ -1,0 +1,64 @@
+---
+import RequestForm from "@components/RequestForm.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const works = [
+  {
+    title: "Жилой комплекс",
+    location: "Москва",
+    concrete: "Бетон М300",
+    text: "Карточка-заглушка для будущей фотографии и описания поставки."
+  },
+  {
+    title: "Частный дом",
+    location: "Московская область",
+    concrete: "Бетон М250",
+    text: "После добавления реальных материалов здесь будет описание объекта."
+  },
+  {
+    title: "Промышленная площадка",
+    location: "Подмосковье",
+    concrete: "Бетон М350",
+    text: "Блок подготовлен под замену изображения и уточнение деталей."
+  }
+];
+---
+
+<BaseLayout
+  title="Примеры работ"
+  description="Галерея примеров работ ЛИДЕР БЕТОН ГРУПП. В первой версии используются заглушки под будущие реальные фотографии."
+>
+  <section class="section-tight">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">Примеры работ</p>
+        <h1>Галерея-заглушка</h1>
+        <p>Раздел готов для дальнейшей замены заглушек на реальные фотографии объектов.</p>
+      </div>
+      <div class="grid grid-3">
+        {works.map((work) => (
+          <article class="work-card">
+            <img src="/images/product-placeholder.svg" alt="" loading="lazy" />
+            <div class="work-card-body">
+              <h3>{work.title}</h3>
+              <p><strong>Район/город:</strong> {work.location}</p>
+              <p><strong>Марка:</strong> {work.concrete}</p>
+              <p>{work.text}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container request-panel">
+      <div class="section-title">
+        <p class="eyebrow">Заявка</p>
+        <h2>Подобрать бетон для объекта</h2>
+        <p>Укажите тип работ, марку или проектные требования, объем и адрес доставки.</p>
+      </div>
+      <RequestForm />
+    </div>
+  </section>
+</BaseLayout>

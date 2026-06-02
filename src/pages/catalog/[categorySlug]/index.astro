@@ -1,0 +1,75 @@
+---
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import ProductCard from "@components/ProductCard.astro";
+import RequestForm from "@components/RequestForm.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { categories, categoryPages, type CategoryPage } from "@lib/catalog";
+import { breadcrumbSchema } from "@lib/schema";
+
+export function getStaticPaths() {
+  return categoryPages.map((category) => ({
+    params: { categorySlug: category.slug },
+    props: { category }
+  }));
+}
+
+type Props = {
+  category: CategoryPage;
+};
+
+const { category } = Astro.props;
+const canonicalBase = Astro.site ?? "https://example.com";
+const crumbs = [
+  { label: "Главная", href: "/" },
+  { label: "Каталог", href: "/catalog/" },
+  { label: category.title }
+];
+const schema = breadcrumbSchema([
+  { name: "Главная", url: new URL("/", canonicalBase).toString() },
+  { name: "Каталог", url: new URL("/catalog/", canonicalBase).toString() },
+  { name: category.title, url: new URL(`/catalog/${category.slug}/`, canonicalBase).toString() }
+]);
+---
+
+<BaseLayout title={category.seoTitle} description={category.seoDescription} structuredData={[schema]}>
+  <section class="section-tight">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <div class="section-title">
+        <p class="eyebrow">Категория</p>
+        <h1>{category.title}</h1>
+        <p>{category.description}</p>
+      </div>
+
+      <nav class="category-tabs" aria-label="Категории каталога">
+        {categories.map((item) => (
+          <a class={item.slug === category.slug ? "is-active" : ""} href={`/catalog/${item.slug}/`}>
+            {item.title}
+          </a>
+        ))}
+      </nav>
+
+      <div class="grid grid-3">
+        {category.products.length > 0 ? (
+          category.products.map((product) => <ProductCard product={product} />)
+        ) : (
+          <div class="catalog-empty">
+            <h2>Товары этой категории скоро появятся</h2>
+            <p>Оставьте заявку, и мы уточним доступные позиции и стоимость доставки.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container request-panel">
+      <div class="section-title">
+        <p class="eyebrow">Заказ</p>
+        <h2>Заказать {category.title.toLowerCase()}</h2>
+        <p>Оставьте контакты, и заявка откроется в WhatsApp с заполненным текстом.</p>
+      </div>
+      <RequestForm productTitle={category.title} />
+    </div>
+  </section>
+</BaseLayout>

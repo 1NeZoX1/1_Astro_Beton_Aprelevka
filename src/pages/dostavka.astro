@@ -1,0 +1,36 @@
+---
+import ContactButtons from "@components/ContactButtons.astro";
+import RequestForm from "@components/RequestForm.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { site } from "@lib/site";
+
+const title = "Доставка бетона";
+const description =
+  "Доставка бетона по Москве и Московской области. Стоимость рассчитывается индивидуально по адресу, объему, марке и условиям подъезда.";
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="section-tight">
+    <div class="container request-panel">
+      <div>
+        <div class="section-title">
+          <p class="eyebrow">Доставка</p>
+          <h1>{title}</h1>
+          <p>{site.deliveryText}</p>
+        </div>
+        <div class="grid">
+          <article class="info-card">
+            <h3>Что нужно для расчета</h3>
+            <p>Адрес объекта, объем заказа, марка бетона, желаемое время подачи и условия подъезда.</p>
+          </article>
+          <article class="info-card">
+            <h3>Без онлайн-калькулятора</h3>
+            <p>Калькулятор доставки в первой версии не используется, чтобы не показывать неподтвержденные расчеты.</p>
+          </article>
+        </div>
+        <ContactButtons />
+      </div>
+      <RequestForm />
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,139 @@
+---
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import ContactButtons from "@components/ContactButtons.astro";
+import ProductCard from "@components/ProductCard.astro";
+import RequestForm from "@components/RequestForm.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import {
+  formatPrice,
+  getProductSpecs,
+  getRelatedProducts,
+  products,
+  type Product
+} from "@lib/catalog";
+import { breadcrumbSchema } from "@lib/schema";
+import { site } from "@lib/site";
+
+export function getStaticPaths() {
+  return products.map((product) => ({
+    params: { categorySlug: product.categorySlug, productSlug: product.slug },
+    props: { product }
+  }));
+}
+
+type Props = {
+  product: Product;
+};
+
+const { product } = Astro.props;
+const specs = getProductSpecs(product.title);
+const related = getRelatedProducts(product);
+const canonicalBase = Astro.site ?? "https://example.com";
+const productPath = `/catalog/${product.categorySlug}/${product.slug}/`;
+const crumbs = [
+  { label: "Главная", href: "/" },
+  { label: "Каталог", href: "/catalog/" },
+  { label: product.category, href: `/catalog/${product.categorySlug}/` },
+  { label: product.title }
+];
+
+const structuredData = [
+  breadcrumbSchema([
+    { name: "Главная", url: new URL("/", canonicalBase).toString() },
+    { name: "Каталог", url: new URL("/catalog/", canonicalBase).toString() },
+    { name: product.category, url: new URL(`/catalog/${product.categorySlug}/`, canonicalBase).toString() },
+    { name: product.title, url: new URL(productPath, canonicalBase).toString() }
+  ]),
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.shortDescription,
+    category: product.category,
+    offers: {
+      "@type": "Offer",
+      price: product.price,
+      priceCurrency: "RUB",
+      availability: "https://schema.org/InStock",
+      url: new URL(productPath, canonicalBase).toString()
+    }
+  }
+];
+---
+
+<BaseLayout title={product.seoTitle} description={product.seoDescription} structuredData={structuredData}>
+  <section class="section-tight">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <div class="grid grid-2">
+        <div>
+          <p class="eyebrow">{product.category}</p>
+          <h1>{product.title}</h1>
+          <p class="lead">{product.shortDescription}</p>
+          <p class="price">{formatPrice(product.price)} ₽/{product.unit}</p>
+          <p class="price-note">Цена указана за 1 м³ без учета доставки.</p>
+          <ContactButtons productTitle={product.title} />
+        </div>
+        <img class="hero-media" src="/images/product-placeholder.svg" alt="" loading="eager" />
+      </div>
+    </div>
+  </section>
+
+  {specs.length > 0 && (
+    <section class="section section-white">
+      <div class="container">
+        <div class="section-title">
+          <p class="eyebrow">Характеристики</p>
+          <h2>Параметры из названия</h2>
+        </div>
+        <ul class="spec-list">
+          {specs.map((spec) => (
+            <li><span>{spec.label}</span><strong>{spec.value}</strong></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="container grid grid-3">
+      <article class="info-card">
+        <h3>Где применяется</h3>
+        <p>Подходит для строительных задач, где в проекте указана соответствующая марка и параметры смеси.</p>
+      </article>
+      <article class="info-card">
+        <h3>Как заказать</h3>
+        <p>Сообщите марку, объем, адрес объекта и желаемое время подачи. Стоимость доставки рассчитывается отдельно.</p>
+      </article>
+      <article class="info-card">
+        <h3>Контакты</h3>
+        <p>{site.phonePrimary}<br />{site.phoneSecondary}<br />WhatsApp: {site.whatsapp}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container request-panel">
+      <div class="section-title">
+        <p class="eyebrow">Заявка</p>
+        <h2>Заказать {product.title}</h2>
+        <p>Форма сформирует текст заявки и откроет WhatsApp на номер {site.whatsapp}.</p>
+      </div>
+      <RequestForm productTitle={product.title} />
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-title">
+          <p class="eyebrow">Похожие товары</p>
+          <h2>Еще из категории «{product.category}»</h2>
+        </div>
+        <div class="grid grid-3">
+          {related.map((item) => <ProductCard product={item} />)}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>

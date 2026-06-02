@@ -1,0 +1,43 @@
+---
+import { formatPrice, type Product } from "@lib/catalog";
+import { site } from "@lib/site";
+
+type Props = {
+  products: Product[];
+};
+
+const { products } = Astro.props;
+---
+
+<div class="price-note">{site.priceNote}</div>
+<div class="table-wrap">
+  <table class="price-table">
+    <thead>
+      <tr>
+        <th>Название</th>
+        <th>Категория</th>
+        <th>Цена за 1 м³</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {products.map((product) => {
+        const href = product.categorySlug && product.slug ? `/catalog/${product.categorySlug}/${product.slug}/` : "/catalog/";
+
+        return (
+          <tr>
+            <td data-label="Название">{product.title}</td>
+            <td data-label="Категория">{product.category}</td>
+            <td data-label="Цена за 1 м³"><strong>{formatPrice(product.price)} ₽</strong></td>
+            <td data-label="Действия">
+              <div class="table-actions">
+                <a class="button button-small button-accent" href="#request">Заказать</a>
+                <a class="button button-small button-outline" href={href}>Подробнее</a>
+              </div>
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>

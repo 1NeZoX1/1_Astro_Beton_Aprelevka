@@ -1,0 +1,45 @@
+---
+import ContactButtons from "@components/ContactButtons.astro";
+import RequestForm from "@components/RequestForm.astro";
+import YandexMap from "@components/YandexMap.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { site } from "@lib/site";
+---
+
+<BaseLayout
+  title="Контакты"
+  description="Контакты ЛИДЕР БЕТОН ГРУПП: телефоны, WhatsApp, MAX, карта завода и форма заявки."
+>
+  <section class="section-tight">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">Контакты</p>
+        <h1>Связаться с {site.name}</h1>
+        <p>{site.region}</p>
+      </div>
+      <div class="grid grid-3">
+        <article class="info-card">
+          <h3>Телефоны</h3>
+          <p><a href="tel:+74950329998">{site.phonePrimary}</a></p>
+          <p><a href="tel:+74950326040">{site.phoneSecondary}</a></p>
+        </article>
+        <article class="info-card">
+          <h3>Мессенджеры</h3>
+          <p><a href={site.whatsappHref}>WhatsApp: {site.whatsapp}</a></p>
+          <p><a href={site.maxHref}>MAX</a></p>
+        </article>
+        <article class="info-card">
+          <h3>Быстрые действия</h3>
+          <ContactButtons />
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container grid grid-2">
+      <YandexMap />
+      <RequestForm />
+    </div>
+  </section>
+</BaseLayout>

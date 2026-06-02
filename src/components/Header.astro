@@ -1,0 +1,39 @@
+---
+import { navItems, site } from "@lib/site";
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label={site.name}>
+      <span class="brand-mark">LBG</span>
+      <span class="brand-text">{site.name}</span>
+    </a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span class="sr-only">Открыть меню</span>
+    </button>
+
+    <nav id="site-menu" class="site-nav" aria-label="Основная навигация">
+      {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
+    </nav>
+
+    <div class="header-actions">
+      <a class="phone-link" href="tel:+74950329998">{site.phonePrimary}</a>
+      <a class="button button-accent" href="/kontakty/#request">Заказать бетон</a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+  const menu = document.querySelector<HTMLElement>("#site-menu");
+
+  toggle?.addEventListener("click", () => {
+    const isOpen = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!isOpen));
+    menu?.classList.toggle("is-open", !isOpen);
+  });
+</script>
