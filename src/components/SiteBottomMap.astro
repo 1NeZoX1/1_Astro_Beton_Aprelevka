@@ -1,0 +1,24 @@
+---
+import YandexMap from "@components/YandexMap.astro";
+import { site } from "@lib/site";
+---
+
+<section class="site-bottom-map">
+  <div class="container bottom-map-grid">
+    <div class="bottom-map-copy">
+      <p class="eyebrow">Карта</p>
+      <h2>Завод на карте</h2>
+      <p>
+        Поставка бетона по Москве и Московской области. Итоговая стоимость
+        рассчитывается с учетом адреса объекта и объема заказа.
+      </p>
+      <div class="bottom-map-contacts">
+        <a href="tel:+74950329998">{site.phonePrimary}</a>
+        <a href="tel:+74950326040">{site.phoneSecondary}</a>
+        <a href={site.whatsappHref}>WhatsApp: {site.whatsapp}</a>
+        <a href={site.maxHref}>MAX</a>
+      </div>
+    </div>
+    <YandexMap />
+  </div>
+</section>

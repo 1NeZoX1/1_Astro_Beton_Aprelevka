@@ -14,6 +14,8 @@ export type Product = {
   price: number;
   slug: string;
   categorySlug: string;
+  concreteSubcategory?: string;
+  concreteSubcategorySlug?: string;
   unit: "м³";
   shortDescription: string;
   seoTitle: string;
@@ -36,6 +38,22 @@ export type ProductSpec = {
   label: string;
   value: string;
 };
+
+export type ConcreteSubcategory = {
+  title: string;
+  slug: string;
+};
+
+export const CONCRETE_SUBCATEGORIES: ConcreteSubcategory[] = [
+  { title: "Бетон на граните", slug: "granit" },
+  { title: "Бетон на гравии", slug: "graviy" },
+  { title: "Товарный бетон", slug: "tovarnyy-beton" },
+  { title: "Гидротехнический бетон", slug: "gidrotehnicheskiy-beton" },
+  { title: "Бетон на мелком щебне", slug: "melkiy-scheben" },
+  { title: "Бетон по схеме Г", slug: "shema-g" },
+  { title: "Тощий бетон", slug: "toschiy-beton" },
+  { title: "Другое", slug: "drugoe" }
+];
 
 const DISPLAY_CATEGORIES: CategoryPage[] = [
   {
@@ -126,6 +144,8 @@ const EXCLUDED_CATEGORIES = new Set([
   "Арматура А1 А240"
 ]);
 
+const EXCLUDED_PRODUCT_VALUES = new Set(["12", "бетон с пмд+a64:g68"]);
+
 const TRANSLIT: Record<string, string> = {
   а: "a",
   б: "b",
@@ -177,10 +197,20 @@ function getProductTitle(product: RawProduct): string {
   return String(product.title ?? product.name ?? "").trim();
 }
 
+function isExcludedProductValue(value: unknown): boolean {
+  const normalized = String(value ?? "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+
+  return EXCLUDED_PRODUCT_VALUES.has(normalized) || normalized.includes("a64:g68");
+}
+
 function isVisibleProduct(product: RawProduct): boolean {
   return (
     Boolean(product.category?.trim() && getProductTitle(product)) &&
-    !EXCLUDED_CATEGORIES.has(product.category)
+    !EXCLUDED_CATEGORIES.has(product.category) &&
+    ![product.category, product.title, product.name].some(isExcludedProductValue)
   );
 }
 
@@ -218,10 +248,55 @@ function classifyProduct(product: RawProduct): CategoryPage {
   return DISPLAY_CATEGORY_BY_SLUG.get("drugoe")!;
 }
 
+function getConcreteSubcategory(
+  displayCategory: CategoryPage,
+  sourceCategory: string,
+  title: string
+): ConcreteSubcategory | undefined {
+  if (displayCategory.slug !== "beton") {
+    return undefined;
+  }
+
+  const text = `${sourceCategory} ${title}`.toLowerCase();
+
+  if (/гранит|граните|грните/.test(text)) {
+    return CONCRETE_SUBCATEGORIES.find((subcategory) => subcategory.slug === "granit");
+  }
+
+  if (/грави[йи]/.test(text)) {
+    return CONCRETE_SUBCATEGORIES.find((subcategory) => subcategory.slug === "graviy");
+  }
+
+  if (/гидротехническ/.test(text)) {
+    return CONCRETE_SUBCATEGORIES.find(
+      (subcategory) => subcategory.slug === "gidrotehnicheskiy-beton"
+    );
+  }
+
+  if (/мелком щебне|мелкий щебень/.test(text)) {
+    return CONCRETE_SUBCATEGORIES.find((subcategory) => subcategory.slug === "melkiy-scheben");
+  }
+
+  if (/схем[ае]\s*г/.test(text)) {
+    return CONCRETE_SUBCATEGORIES.find((subcategory) => subcategory.slug === "shema-g");
+  }
+
+  if (/тощий/.test(text)) {
+    return CONCRETE_SUBCATEGORIES.find((subcategory) => subcategory.slug === "toschiy-beton");
+  }
+
+  if (/доставка бетона|товарный бетон|бетон/.test(text)) {
+    return CONCRETE_SUBCATEGORIES.find((subcategory) => subcategory.slug === "tovarnyy-beton");
+  }
+
+  return CONCRETE_SUBCATEGORIES.find((subcategory) => subcategory.slug === "drugoe");
+}
+
 function normalizeProduct(product: RawProduct, slugCounts: Map<string, number>): Product {
   const sourceCategory = String(product.category).trim();
   const title = getProductTitle(product);
   const displayCategory = classifyProduct(product);
+  const concreteSubcategory = getConcreteSubcategory(displayCategory, sourceCategory, title);
   const baseSlug = slugify(title);
   const slugKey = `${displayCategory.slug}/${baseSlug}`;
   const count = slugCounts.get(slugKey) ?? 0;
@@ -235,6 +310,8 @@ function normalizeProduct(product: RawProduct, slugCounts: Map<string, number>):
     price: Number(product.price),
     categorySlug: displayCategory.slug,
     slug,
+    concreteSubcategory: concreteSubcategory?.title,
+    concreteSubcategorySlug: concreteSubcategory?.slug,
     unit: "м³",
     shortDescription: `${displayCategory.title}: позиция каталога для строительных работ с доставкой по Москве и Московской области.`,
     seoTitle: `${title} купить с доставкой`,
@@ -278,6 +355,11 @@ export function getPopularProducts(limit = 8): Product[] {
 
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat("ru-RU").format(price);
+}
+
+export function formatProductPrice(product: Product): string {
+  const price = `${formatPrice(product.price)} ₽`;
+  return product.categorySlug === "arenda-tehniki" ? price : `${price}/${product.unit}`;
 }
 
 export function getProductSpecs(title: string): ProductSpec[] {

@@ -414,20 +414,57 @@ textarea {
   box-shadow: 0 8px 24px rgba(15, 47, 87, 0.05);
 }
 
-.category-tabs a {
+.category-tabs a,
+.category-tabs button {
   min-height: 42px;
   padding: 10px 16px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   background: #f8fafc;
+  color: var(--color-primary);
+  font: inherit;
   font-weight: 800;
+  cursor: pointer;
   white-space: nowrap;
 }
 
-.category-tabs a.is-active {
+.category-tabs a.is-active,
+.category-tabs button.is-active {
   color: var(--color-primary);
   background: var(--color-accent);
   border-color: var(--color-accent);
+}
+
+.subcategory-tabs {
+  margin-top: -12px;
+}
+
+.subcategory-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.subcategory-count {
+  min-width: 26px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(15, 47, 87, 0.08);
+  color: var(--color-primary);
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.subcategory-tabs button.is-active .subcategory-count {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.product-card-body > .product-subcategory {
+  margin: -4px 0 6px;
+  color: var(--color-muted);
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .catalog-category-grid {
@@ -468,6 +505,11 @@ textarea {
 .catalog-category-card p {
   margin: 0;
   color: var(--color-muted);
+}
+
+.catalog-category-card .button {
+  align-self: flex-start;
+  margin-top: 18px;
 }
 
 .catalog-category-count {
@@ -634,6 +676,52 @@ textarea {
   background: var(--color-primary-soft);
 }
 
+.site-bottom-map {
+  padding: 64px 0;
+  background: var(--color-white);
+  border-top: 1px solid var(--color-border);
+}
+
+.bottom-map-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr);
+  gap: 28px;
+  align-items: stretch;
+}
+
+.bottom-map-copy {
+  padding: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+
+.bottom-map-copy h2 {
+  margin: 0 0 12px;
+  color: var(--color-primary);
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.1;
+}
+
+.bottom-map-copy p {
+  color: var(--color-muted);
+}
+
+.bottom-map-contacts {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+  font-weight: 800;
+}
+
+.site-bottom-map .map-block {
+  min-height: 100%;
+}
+
+.site-bottom-map .map-block iframe {
+  min-height: 420px;
+}
+
 .site-footer {
   padding: 44px 0;
   color: #dfe8f1;
@@ -682,6 +770,7 @@ textarea {
   }
 
   .hero-grid,
+  .bottom-map-grid,
   .request-panel,
   .footer-grid {
     grid-template-columns: 1fr;
@@ -722,6 +811,18 @@ textarea {
 
   .price-table {
     min-width: 0;
+  }
+
+  .site-bottom-map {
+    padding: 44px 0;
+  }
+
+  .bottom-map-copy {
+    padding: 22px;
+  }
+
+  .site-bottom-map .map-block iframe {
+    min-height: 320px;
   }
 
   .price-table thead {

@@ -5,7 +5,7 @@ import ProductCard from "@components/ProductCard.astro";
 import RequestForm from "@components/RequestForm.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
-  formatPrice,
+  formatProductPrice,
   getProductSpecs,
   getRelatedProducts,
   products,
@@ -30,6 +30,10 @@ const specs = getProductSpecs(product.title);
 const related = getRelatedProducts(product);
 const canonicalBase = Astro.site ?? "https://example.com";
 const productPath = `/catalog/${product.categorySlug}/${product.slug}/`;
+const priceNote =
+  product.categorySlug === "arenda-tehniki"
+    ? "Стоимость указана без учета дополнительных условий объекта. Итоговый расчет уточняется по заявке."
+    : "Цена указана за 1 м³ без учета доставки.";
 const crumbs = [
   { label: "Главная", href: "/" },
   { label: "Каталог", href: "/catalog/" },
@@ -70,8 +74,8 @@ const structuredData = [
           <p class="eyebrow">{product.category}</p>
           <h1>{product.title}</h1>
           <p class="lead">{product.shortDescription}</p>
-          <p class="price">{formatPrice(product.price)} ₽/{product.unit}</p>
-          <p class="price-note">Цена указана за 1 м³ без учета доставки.</p>
+          <p class="price">{formatProductPrice(product)}</p>
+          <p class="price-note">{priceNote}</p>
           <ContactButtons productTitle={product.title} />
         </div>
         <img class="hero-media" src="/images/product-placeholder.svg" alt="" loading="eager" />

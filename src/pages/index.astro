@@ -1,6 +1,6 @@
 ---
+import CategoryGrid from "@components/CategoryGrid.astro";
 import ContactButtons from "@components/ContactButtons.astro";
-import PriceTable from "@components/PriceTable.astro";
 import ProductCard from "@components/ProductCard.astro";
 import RequestForm from "@components/RequestForm.astro";
 import YandexMap from "@components/YandexMap.astro";
@@ -56,27 +56,13 @@ const faqItems = [
     <div class="container">
       <div class="section-title">
         <p class="eyebrow">Цены</p>
-        <h2>Прайс на бетон и строительные смеси</h2>
-        <p>После загрузки полного Excel-списка таблица автоматически расширится без ручного создания страниц.</p>
+        <h2>Цены на бетон и строительные смеси</h2>
+        <p>
+          Выберите категорию, чтобы посмотреть актуальные позиции и стоимость за 1 м³.
+          Итоговая стоимость доставки рассчитывается индивидуально.
+        </p>
       </div>
-      <PriceTable products={products} />
-    </div>
-  </section>
-
-  <section class="section section-white">
-    <div class="container">
-      <div class="section-title">
-        <p class="eyebrow">Категории</p>
-        <h2>Категории продукции</h2>
-      </div>
-      <div class="grid grid-4">
-        {categoryPages.map((category) => (
-          <a class="info-card" href={`/catalog/${category.slug}/`}>
-            <h3>{category.title}</h3>
-            <p>{category.description}</p>
-          </a>
-        ))}
-      </div>
+      <CategoryGrid categories={categoryPages} />
     </div>
   </section>
 

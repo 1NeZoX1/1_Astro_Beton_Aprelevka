@@ -1,0 +1,70 @@
+---
+import ContactButtons from "@components/ContactButtons.astro";
+import RequestForm from "@components/RequestForm.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { site } from "@lib/site";
+---
+
+<BaseLayout
+  title="О компании"
+  description="О компании ЛИДЕР БЕТОН ГРУПП: поставка бетона и строительных смесей с доставкой по Москве и Московской области."
+>
+  <section class="section-tight">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">{site.legalName}</p>
+        <h1>О компании</h1>
+        <p>
+          ООО «ЛИДЕР БЕТОН ГРУПП» занимается поставкой бетона и строительных
+          смесей с доставкой по Москве и Московской области. Мы помогаем
+          подобрать подходящую марку бетона под задачу объекта и рассчитываем
+          итоговую стоимость с учетом адреса доставки, объема заказа и условий
+          подъезда.
+        </p>
+      </div>
+
+      <div class="grid grid-3">
+        <article class="info-card">
+          <h2>Что поставляем</h2>
+          <p>
+            В каталоге представлены товарный бетон, бетон с ПМД, фибробетон,
+            керамзитобетон, сухой бетон, растворы, ЦПС и дополнительные позиции
+            для строительных работ.
+          </p>
+        </article>
+        <article class="info-card">
+          <h2>Как работаем</h2>
+          <p>
+            Заявка принимается через форму, телефон, WhatsApp или MAX. Для
+            расчета нужны марка смеси, объем, адрес объекта и условия подъезда.
+          </p>
+        </article>
+        <article class="info-card">
+          <h2>Документы и расчет стоимости</h2>
+          <p>
+            Стоимость рассчитывается индивидуально. При уточнении заказа можно
+            запросить документы и согласовать параметры поставки бетона от
+            завода.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container request-panel">
+      <div>
+        <div class="section-title">
+          <p class="eyebrow">Связаться</p>
+          <h2>Рассчитать поставку бетона</h2>
+          <p>
+            Укажите параметры объекта, и заявка откроется в WhatsApp с
+            заполненным текстом.
+          </p>
+        </div>
+        <ContactButtons />
+      </div>
+      <RequestForm />
+    </div>
+  </section>
+</BaseLayout>

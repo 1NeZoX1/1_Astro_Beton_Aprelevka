@@ -1,0 +1,20 @@
+---
+import type { CategoryPage } from "@lib/catalog";
+
+type Props = {
+  categories: CategoryPage[];
+};
+
+const { categories } = Astro.props;
+---
+
+<div class="catalog-category-grid">
+  {categories.map((category) => (
+    <a class="catalog-category-card" href={`/catalog/${category.slug}/`}>
+      <span class="catalog-category-count">{category.products.length}</span>
+      <h2>{category.title}</h2>
+      <p>{category.description}</p>
+      <span class="button button-small button-accent">Смотреть цены</span>
+    </a>
+  ))}
+</div>

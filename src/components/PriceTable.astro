@@ -1,5 +1,5 @@
 ---
-import { formatPrice, type Product } from "@lib/catalog";
+import { formatProductPrice, type Product } from "@lib/catalog";
 import { site } from "@lib/site";
 
 type Props = {
@@ -16,7 +16,7 @@ const { products } = Astro.props;
       <tr>
         <th>Название</th>
         <th>Категория</th>
-        <th>Цена за 1 м³</th>
+        <th>Цена</th>
         <th>Действия</th>
       </tr>
     </thead>
@@ -27,8 +27,8 @@ const { products } = Astro.props;
         return (
           <tr>
             <td data-label="Название">{product.title}</td>
-            <td data-label="Категория">{product.category}</td>
-            <td data-label="Цена за 1 м³"><strong>{formatPrice(product.price)} ₽</strong></td>
+            <td data-label="Категория">{product.concreteSubcategory ?? product.category}</td>
+            <td data-label="Цена"><strong>{formatProductPrice(product)}</strong></td>
             <td data-label="Действия">
               <div class="table-actions">
                 <a class="button button-small button-accent" href="#request">Заказать</a>

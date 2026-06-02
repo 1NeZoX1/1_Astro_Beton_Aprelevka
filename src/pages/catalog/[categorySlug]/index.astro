@@ -3,7 +3,12 @@ import Breadcrumbs from "@components/Breadcrumbs.astro";
 import ProductCard from "@components/ProductCard.astro";
 import RequestForm from "@components/RequestForm.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { categories, categoryPages, type CategoryPage } from "@lib/catalog";
+import {
+  CONCRETE_SUBCATEGORIES,
+  categories,
+  categoryPages,
+  type CategoryPage
+} from "@lib/catalog";
 import { breadcrumbSchema } from "@lib/schema";
 
 export function getStaticPaths() {
@@ -18,6 +23,16 @@ type Props = {
 };
 
 const { category } = Astro.props;
+const isConcreteCategory = category.slug === "beton";
+const concreteTabs = CONCRETE_SUBCATEGORIES.map((subcategory) => ({
+  ...subcategory,
+  products: category.products.filter(
+    (product) => product.concreteSubcategorySlug === subcategory.slug
+  )
+}));
+const activeConcreteTab =
+  concreteTabs.find((subcategory) => subcategory.products.length > 0)?.slug ??
+  CONCRETE_SUBCATEGORIES[0].slug;
 const canonicalBase = Astro.site ?? "https://example.com";
 const crumbs = [
   { label: "Главная", href: "/" },
@@ -49,16 +64,55 @@ const schema = breadcrumbSchema([
         ))}
       </nav>
 
-      <div class="grid grid-3">
-        {category.products.length > 0 ? (
-          category.products.map((product) => <ProductCard product={product} />)
-        ) : (
+      {isConcreteCategory && (
+        <nav class="category-tabs subcategory-tabs" aria-label="Подкатегории бетона">
+          {concreteTabs.map((subcategory) => (
+            <button
+              class={subcategory.slug === activeConcreteTab ? "is-active" : ""}
+              type="button"
+              data-subcategory-tab={subcategory.slug}
+              aria-selected={subcategory.slug === activeConcreteTab ? "true" : "false"}
+            >
+              <span>{subcategory.title}</span>
+              <span class="subcategory-count">{subcategory.products.length}</span>
+            </button>
+          ))}
+        </nav>
+      )}
+
+      {isConcreteCategory ? (
+        <div class="subcategory-panels">
+          {concreteTabs.map((subcategory) => (
+            <section
+              class="subcategory-panel"
+              data-subcategory-panel={subcategory.slug}
+              hidden={subcategory.slug !== activeConcreteTab}
+            >
+              {subcategory.products.length > 0 ? (
+                <div class="grid grid-3">
+                  {subcategory.products.map((product) => <ProductCard product={product} />)}
+                </div>
+              ) : (
+                <div class="catalog-empty">
+                  <h2>Товары этой подкатегории скоро появятся</h2>
+                  <p>Оставьте заявку, и мы уточним доступные позиции и стоимость доставки.</p>
+                </div>
+              )}
+            </section>
+          ))}
+        </div>
+      ) : (
+        <div class="grid grid-3">
+          {category.products.length > 0 ? (
+            category.products.map((product) => <ProductCard product={product} />)
+          ) : (
           <div class="catalog-empty">
             <h2>Товары этой категории скоро появятся</h2>
             <p>Оставьте заявку, и мы уточним доступные позиции и стоимость доставки.</p>
           </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   </section>
 
@@ -72,4 +126,45 @@ const schema = breadcrumbSchema([
       <RequestForm productTitle={category.title} />
     </div>
   </section>
+
+  {isConcreteCategory && (
+    <script is:inline>
+      const tabButtons = document.querySelectorAll("[data-subcategory-tab]");
+      const tabPanels = document.querySelectorAll("[data-subcategory-panel]");
+
+      function activateConcreteSubcategory(slug) {
+        if (!slug) {
+          return;
+        }
+
+        tabButtons.forEach((button) => {
+          const isActive = button.getAttribute("data-subcategory-tab") === slug;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-selected", isActive ? "true" : "false");
+        });
+
+        tabPanels.forEach((panel) => {
+          panel.hidden = panel.getAttribute("data-subcategory-panel") !== slug;
+        });
+
+        const url = new URL(window.location.href);
+        url.searchParams.set("sub", slug);
+        window.history.replaceState(null, "", url);
+      }
+
+      const initialSubcategory = new URLSearchParams(window.location.search).get("sub");
+      if (
+        initialSubcategory &&
+        document.querySelector(`[data-subcategory-panel="${initialSubcategory}"]`)
+      ) {
+        activateConcreteSubcategory(initialSubcategory);
+      }
+
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          activateConcreteSubcategory(button.getAttribute("data-subcategory-tab"));
+        });
+      });
+    </script>
+  )}
 </BaseLayout>

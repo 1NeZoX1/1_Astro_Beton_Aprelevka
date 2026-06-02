@@ -18,6 +18,8 @@ export const site = {
 };
 
 export const navItems = [
+  { href: "/", label: "Главная" },
+  { href: "/o-kompanii/", label: "О компании" },
   { href: "/#prices", label: "Цены" },
   { href: "/catalog/", label: "Каталог" },
   { href: "/dostavka/", label: "Доставка" },

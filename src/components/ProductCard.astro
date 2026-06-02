@@ -1,5 +1,5 @@
 ---
-import { formatPrice, type Product } from "@lib/catalog";
+import { formatProductPrice, type Product } from "@lib/catalog";
 
 type Props = {
   product: Product;
@@ -15,10 +15,11 @@ const href = product.categorySlug && product.slug ? `/catalog/${product.category
   </a>
   <div class="product-card-body">
     <p class="eyebrow">{product.category}</p>
+    {product.concreteSubcategory && <p class="product-subcategory">{product.concreteSubcategory}</p>}
     <h3><a href={href}>{product.title}</a></h3>
     <p>{product.shortDescription}</p>
     <div class="product-card-footer">
-      <strong class="product-price">{formatPrice(product.price)} ₽/{product.unit}</strong>
+      <strong class="product-price">{formatProductPrice(product)}</strong>
       <div class="card-actions">
         <a class="button button-small button-outline" href={href}>Подробнее</a>
         <a class="button button-small button-accent" href="#request">Заказать</a>
