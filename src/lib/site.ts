@@ -20,8 +20,7 @@ export const site = {
 export const navItems = [
   { href: "/", label: "Главная" },
   { href: "/o-kompanii/", label: "О компании" },
-  { href: "/#prices", label: "Цены" },
-  { href: "/catalog/", label: "Каталог" },
+  { href: "/catalog/", label: "Каталог и цены" },
   { href: "/dostavka/", label: "Доставка" },
   { href: "/primery-rabot/", label: "Примеры работ" },
   { href: "/kontakty/", label: "Контакты" }
