@@ -16,6 +16,7 @@ export type Product = {
   categorySlug: string;
   concreteSubcategory?: string;
   concreteSubcategorySlug?: string;
+  pmdGroup?: string;
   unit: "м³";
   shortDescription: string;
   seoTitle: string;
@@ -54,6 +55,8 @@ export const CONCRETE_SUBCATEGORIES: ConcreteSubcategory[] = [
   { title: "Тощий бетон", slug: "toschiy-beton" },
   { title: "Другое", slug: "drugoe" }
 ];
+
+export const PMD_GROUPS = ["ПМД-5", "ПМД-10", "ПМД-15", "Другое"] as const;
 
 const DISPLAY_CATEGORIES: CategoryPage[] = [
   {
@@ -292,11 +295,38 @@ function getConcreteSubcategory(
   return CONCRETE_SUBCATEGORIES.find((subcategory) => subcategory.slug === "drugoe");
 }
 
+function getPmdGroup(
+  displayCategory: CategoryPage,
+  sourceCategory: string,
+  title: string
+): string | undefined {
+  if (displayCategory.slug !== "beton-s-pmd") {
+    return undefined;
+  }
+
+  const text = `${sourceCategory} ${title}`.toLowerCase();
+
+  if (/пмд\s*-?\s*5/.test(text)) {
+    return "ПМД-5";
+  }
+
+  if (/пмд\s*-?\s*10/.test(text)) {
+    return "ПМД-10";
+  }
+
+  if (/пмд\s*-?\s*15/.test(text)) {
+    return "ПМД-15";
+  }
+
+  return "Другое";
+}
+
 function normalizeProduct(product: RawProduct, slugCounts: Map<string, number>): Product {
   const sourceCategory = String(product.category).trim();
   const title = getProductTitle(product);
   const displayCategory = classifyProduct(product);
   const concreteSubcategory = getConcreteSubcategory(displayCategory, sourceCategory, title);
+  const pmdGroup = getPmdGroup(displayCategory, sourceCategory, title);
   const baseSlug = slugify(title);
   const slugKey = `${displayCategory.slug}/${baseSlug}`;
   const count = slugCounts.get(slugKey) ?? 0;
@@ -312,6 +342,7 @@ function normalizeProduct(product: RawProduct, slugCounts: Map<string, number>):
     slug,
     concreteSubcategory: concreteSubcategory?.title,
     concreteSubcategorySlug: concreteSubcategory?.slug,
+    pmdGroup,
     unit: "м³",
     shortDescription: `${displayCategory.title}: позиция каталога для строительных работ с доставкой по Москве и Московской области.`,
     seoTitle: `${title} купить с доставкой`,

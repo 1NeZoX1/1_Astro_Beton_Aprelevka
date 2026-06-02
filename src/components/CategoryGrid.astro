@@ -6,14 +6,30 @@ type Props = {
 };
 
 const { categories } = Astro.props;
+
+const categoryVisuals: Record<string, string> = {
+  beton: "Б",
+  "beton-s-pmd": "ПМД",
+  fibrobeton: "F",
+  keramzitobeton: "К",
+  "suhoy-beton": "С",
+  "rastvory-i-cps": "Р",
+  "arenda-tehniki": "А",
+  drugoe: "+"
+};
 ---
 
 <div class="catalog-category-grid">
   {categories.map((category) => (
     <a class="catalog-category-card" href={`/catalog/${category.slug}/`}>
-      <span class="catalog-category-count">{category.products.length}</span>
-      <h2>{category.title}</h2>
-      <p>{category.description}</p>
+      <span class={`catalog-category-icon catalog-category-icon-${category.slug}`} aria-hidden="true">
+        {categoryVisuals[category.slug] ?? "+"}
+      </span>
+      <span class="catalog-category-count">{category.products.length} поз.</span>
+      <div>
+        <h2>{category.title}</h2>
+        <p>{category.description}</p>
+      </div>
       <span class="button button-small button-accent">Смотреть цены</span>
     </a>
   ))}

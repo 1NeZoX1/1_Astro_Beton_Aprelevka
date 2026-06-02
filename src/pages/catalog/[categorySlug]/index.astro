@@ -5,9 +5,11 @@ import RequestForm from "@components/RequestForm.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
   CONCRETE_SUBCATEGORIES,
+  PMD_GROUPS,
   categories,
   categoryPages,
-  type CategoryPage
+  type CategoryPage,
+  type Product
 } from "@lib/catalog";
 import { breadcrumbSchema } from "@lib/schema";
 
@@ -24,8 +26,71 @@ type Props = {
 
 const { category } = Astro.props;
 const isConcreteCategory = category.slug === "beton";
+const isPmdCategory = category.slug === "beton-s-pmd";
+const pmdGroupOrder = new Map<string, number>(PMD_GROUPS.map((group, index) => [group, index]));
+
+function getProductMarkNumber(title: string): number {
+  const match = title.match(/(?:^|\s)[МM](\d+)/i);
+  return match?.[1] ? Number(match[1]) : 0;
+}
+
+function sortPmdProducts(a: Product, b: Product): number {
+  const groupA = pmdGroupOrder.get(a.pmdGroup ?? "Другое") ?? PMD_GROUPS.length;
+  const groupB = pmdGroupOrder.get(b.pmdGroup ?? "Другое") ?? PMD_GROUPS.length;
+
+  if (groupA !== groupB) {
+    return groupA - groupB;
+  }
+
+  const markA = getProductMarkNumber(a.title);
+  const markB = getProductMarkNumber(b.title);
+
+  if (markA !== markB) {
+    return markB - markA;
+  }
+
+  return a.title.localeCompare(b.title, "ru");
+}
+
+const sortedPmdProducts = isPmdCategory
+  ? [...category.products].sort(sortPmdProducts)
+  : [];
+const hasOtherPmdProducts = sortedPmdProducts.some((product) => product.pmdGroup === "Другое");
+const pmdFilters = [
+  { label: "Все", slug: "all", query: "", products: sortedPmdProducts },
+  ...PMD_GROUPS
+    .filter((group) => group !== "Другое" || hasOtherPmdProducts)
+    .map((group) => ({
+      label: group,
+      slug: group === "Другое" ? "drugoe" : group.replace("ПМД-", ""),
+      query: group === "Другое" ? "drugoe" : group.replace("ПМД-", ""),
+      products: sortedPmdProducts.filter((product) => product.pmdGroup === group)
+    }))
+];
+const concreteSubcategoryDescriptions: Record<string, string> = {
+  granit: "Прочные смеси для нагруженных монолитных конструкций.",
+  graviy: "Практичный бетон для фундаментов, площадок и общестроительных работ.",
+  "tovarnyy-beton": "Популярные марки товарного бетона для типовых задач.",
+  "gidrotehnicheskiy-beton": "Смеси с повышенной стойкостью к влаге и нагрузкам.",
+  "melkiy-scheben": "Бетон для плотной укладки и работ с частым армированием.",
+  "shema-g": "Позиции по схеме Г для специальных требований к смеси.",
+  "toschiy-beton": "Экономичные смеси для подготовки оснований и подбетонки.",
+  drugoe: "Дополнительные позиции бетонного каталога."
+};
+const concreteSubcategoryVisuals: Record<string, string> = {
+  granit: "Г",
+  graviy: "Гр",
+  "tovarnyy-beton": "М",
+  "gidrotehnicheskiy-beton": "W",
+  "melkiy-scheben": "Щ",
+  "shema-g": "Г",
+  "toschiy-beton": "Т",
+  drugoe: "+"
+};
 const concreteTabs = CONCRETE_SUBCATEGORIES.map((subcategory) => ({
   ...subcategory,
+  description: concreteSubcategoryDescriptions[subcategory.slug],
+  visual: concreteSubcategoryVisuals[subcategory.slug],
   products: category.products.filter(
     (product) => product.concreteSubcategorySlug === subcategory.slug
   )
@@ -65,16 +130,22 @@ const schema = breadcrumbSchema([
       </nav>
 
       {isConcreteCategory && (
-        <nav class="category-tabs subcategory-tabs" aria-label="Подкатегории бетона">
+        <nav class="subcategory-card-grid" aria-label="Подкатегории бетона">
           {concreteTabs.map((subcategory) => (
             <button
-              class={subcategory.slug === activeConcreteTab ? "is-active" : ""}
+              class={`subcategory-card ${subcategory.slug === activeConcreteTab ? "is-active" : ""}`}
               type="button"
               data-subcategory-tab={subcategory.slug}
               aria-selected={subcategory.slug === activeConcreteTab ? "true" : "false"}
             >
-              <span>{subcategory.title}</span>
-              <span class="subcategory-count">{subcategory.products.length}</span>
+              <span class={`subcategory-icon subcategory-icon-${subcategory.slug}`} aria-hidden="true">
+                {subcategory.visual}
+              </span>
+              <span class="subcategory-card-body">
+                <strong>{subcategory.title}</strong>
+                <span>{subcategory.description}</span>
+              </span>
+              <span class="subcategory-count">{subcategory.products.length} поз.</span>
             </button>
           ))}
         </nav>
@@ -89,9 +160,15 @@ const schema = breadcrumbSchema([
               hidden={subcategory.slug !== activeConcreteTab}
             >
               {subcategory.products.length > 0 ? (
-                <div class="grid grid-3">
-                  {subcategory.products.map((product) => <ProductCard product={product} />)}
-                </div>
+                <>
+                  <div class="catalog-products-heading">
+                    <h2>Марки и цены: {subcategory.title}</h2>
+                    <p>Выберите позицию или оставьте заявку — менеджер рассчитает итоговую стоимость с доставкой.</p>
+                  </div>
+                  <div class="grid grid-3 product-grid">
+                    {subcategory.products.map((product) => <ProductCard product={product} />)}
+                  </div>
+                </>
               ) : (
                 <div class="catalog-empty">
                   <h2>Товары этой подкатегории скоро появятся</h2>
@@ -101,17 +178,63 @@ const schema = breadcrumbSchema([
             </section>
           ))}
         </div>
-      ) : (
-        <div class="grid grid-3">
-          {category.products.length > 0 ? (
-            category.products.map((product) => <ProductCard product={product} />)
-          ) : (
-          <div class="catalog-empty">
-            <h2>Товары этой категории скоро появятся</h2>
-            <p>Оставьте заявку, и мы уточним доступные позиции и стоимость доставки.</p>
+      ) : isPmdCategory ? (
+        <>
+          <div class="catalog-products-heading">
+            <h2>Марки и цены</h2>
+            <p>Выберите температурную группу ПМД или оставьте заявку — менеджер подберет бетон под условия объекта.</p>
           </div>
-          )}
-        </div>
+          <nav class="pmd-filter" aria-label="Фильтр по группе ПМД">
+            {pmdFilters.map((filter) => (
+              <button
+                class={`pmd-filter-chip ${filter.slug === "all" ? "is-active" : ""}`}
+                type="button"
+                data-pmd-tab={filter.query}
+                aria-selected={filter.slug === "all" ? "true" : "false"}
+              >
+                <span>{filter.label}</span>
+                <span>{filter.products.length}</span>
+              </button>
+            ))}
+          </nav>
+          <div class="pmd-panels">
+            {pmdFilters.map((filter) => (
+              <section
+                class="pmd-panel"
+                data-pmd-panel={filter.query}
+                hidden={filter.slug !== "all"}
+              >
+                {filter.products.length > 0 ? (
+                  <div class="grid grid-3 product-grid">
+                    {filter.products.map((product) => <ProductCard product={product} />)}
+                  </div>
+                ) : (
+                  <div class="catalog-empty">
+                    <h2>Товары этой группы скоро появятся</h2>
+                    <p>Оставьте заявку, и мы уточним доступные позиции и стоимость доставки.</p>
+                  </div>
+                )}
+              </section>
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
+          <div class="catalog-products-heading">
+            <h2>Марки и цены</h2>
+            <p>Выберите позицию или оставьте заявку — менеджер рассчитает итоговую стоимость с доставкой.</p>
+          </div>
+          <div class="grid grid-3 product-grid">
+            {category.products.length > 0 ? (
+              category.products.map((product) => <ProductCard product={product} />)
+            ) : (
+            <div class="catalog-empty">
+              <h2>Товары этой категории скоро появятся</h2>
+              <p>Оставьте заявку, и мы уточним доступные позиции и стоимость доставки.</p>
+            </div>
+            )}
+          </div>
+        </>
       )}
     </div>
   </section>
@@ -163,6 +286,46 @@ const schema = breadcrumbSchema([
       tabButtons.forEach((button) => {
         button.addEventListener("click", () => {
           activateConcreteSubcategory(button.getAttribute("data-subcategory-tab"));
+        });
+      });
+    </script>
+  )}
+
+  {isPmdCategory && (
+    <script is:inline>
+      const pmdFilterButtons = document.querySelectorAll("[data-pmd-tab]");
+      const pmdPanels = document.querySelectorAll("[data-pmd-panel]");
+
+      function activatePmdFilter(group) {
+        const normalizedGroup = group ?? "";
+
+        pmdFilterButtons.forEach((button) => {
+          const isActive = button.getAttribute("data-pmd-tab") === normalizedGroup;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-selected", isActive ? "true" : "false");
+        });
+
+        pmdPanels.forEach((panel) => {
+          panel.hidden = panel.getAttribute("data-pmd-panel") !== normalizedGroup;
+        });
+
+        const url = new URL(window.location.href);
+        if (normalizedGroup) {
+          url.searchParams.set("pmd", normalizedGroup);
+        } else {
+          url.searchParams.delete("pmd");
+        }
+        window.history.replaceState(null, "", url);
+      }
+
+      const initialPmdGroup = new URLSearchParams(window.location.search).get("pmd") ?? "";
+      if (document.querySelector(`[data-pmd-panel="${initialPmdGroup}"]`)) {
+        activatePmdFilter(initialPmdGroup);
+      }
+
+      pmdFilterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          activatePmdFilter(button.getAttribute("data-pmd-tab"));
         });
       });
     </script>

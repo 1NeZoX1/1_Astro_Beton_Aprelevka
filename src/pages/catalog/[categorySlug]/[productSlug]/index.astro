@@ -34,6 +34,20 @@ const priceNote =
   product.categorySlug === "arenda-tehniki"
     ? "Стоимость указана без учета дополнительных условий объекта. Итоговый расчет уточняется по заявке."
     : "Цена указана за 1 м³ без учета доставки.";
+const offerNotes =
+  product.categorySlug === "arenda-tehniki"
+    ? [
+        "Цена указана без учета дополнительных условий объекта;",
+        "Итоговая стоимость зависит от адреса и времени работы;",
+        "Доставка и подача рассчитываются отдельно;",
+        "Можно заказать через WhatsApp или по телефону."
+      ]
+    : [
+        "Цена указана за 1 м³;",
+        "Доставка рассчитывается отдельно;",
+        "Итоговая стоимость зависит от адреса и объема;",
+        "Можно заказать через WhatsApp или по телефону."
+      ];
 const crumbs = [
   { label: "Главная", href: "/" },
   { label: "Каталог", href: "/catalog/" },
@@ -69,8 +83,8 @@ const structuredData = [
   <section class="section-tight">
     <div class="container">
       <Breadcrumbs items={crumbs} />
-      <div class="grid grid-2">
-        <div>
+      <div class="grid grid-2 product-offer-grid">
+        <div class="product-offer-copy">
           <p class="eyebrow">{product.category}</p>
           <h1>{product.title}</h1>
           <p class="lead">{product.shortDescription}</p>
@@ -78,7 +92,14 @@ const structuredData = [
           <p class="price-note">{priceNote}</p>
           <ContactButtons productTitle={product.title} />
         </div>
-        <img class="hero-media" src="/images/product-placeholder.svg" alt="" loading="eager" />
+        <aside class="offer-summary">
+          <p class="eyebrow">Расчет стоимости</p>
+          <h2>Коммерческое предложение</h2>
+          <ul>
+            {offerNotes.map((note) => <li>{note}</li>)}
+          </ul>
+          <a class="button button-accent" href="#request">Получить расчет</a>
+        </aside>
       </div>
     </div>
   </section>

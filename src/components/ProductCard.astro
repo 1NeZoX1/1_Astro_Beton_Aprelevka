@@ -1,5 +1,5 @@
 ---
-import { formatProductPrice, type Product } from "@lib/catalog";
+import { formatProductPrice, getProductSpecs, type Product } from "@lib/catalog";
 
 type Props = {
   product: Product;
@@ -7,17 +7,27 @@ type Props = {
 
 const { product } = Astro.props;
 const href = product.categorySlug && product.slug ? `/catalog/${product.categorySlug}/${product.slug}/` : "/catalog/";
+const specs = getProductSpecs(product.title);
+const mark = specs.find((spec) => spec.label === "Марка")?.value;
+const visibleSpecs = specs.filter((spec) => spec.label !== "Марка");
+const badge = product.concreteSubcategory ?? product.category;
 ---
 
 <article class="product-card">
-  <a class="product-card-image" href={href} aria-label={`Подробнее: ${product.title}`}>
-    <img src="/images/product-placeholder.svg" alt="" loading="lazy" />
-  </a>
   <div class="product-card-body">
-    <p class="eyebrow">{product.category}</p>
-    {product.concreteSubcategory && <p class="product-subcategory">{product.concreteSubcategory}</p>}
+    <div class="product-card-top">
+      <span class="product-badge-group">
+        <span class="product-badge">{badge}</span>
+        {product.pmdGroup && <span class="product-badge product-badge-secondary">{product.pmdGroup}</span>}
+      </span>
+      {mark && <span class="product-mark">{mark}</span>}
+    </div>
     <h3><a href={href}>{product.title}</a></h3>
-    <p>{product.shortDescription}</p>
+    {visibleSpecs.length > 0 && (
+      <ul class="product-spec-chips" aria-label="Характеристики">
+        {visibleSpecs.map((spec) => <li>{spec.value}</li>)}
+      </ul>
+    )}
     <div class="product-card-footer">
       <strong class="product-price">{formatProductPrice(product)}</strong>
       <div class="card-actions">
