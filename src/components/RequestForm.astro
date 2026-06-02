@@ -7,6 +7,11 @@ const { productTitle = "" } = Astro.props;
 ---
 
 <form class="request-form js-request-form" id="request">
+  <div class="form-head">
+    <p class="eyebrow">WhatsApp-заявка</p>
+    <h3>Получить расчет</h3>
+    <p>Заполните поля, и форма откроет WhatsApp с готовым текстом заявки.</p>
+  </div>
   <div class="form-grid">
     <label>
       <span>Имя</span>
@@ -29,7 +34,10 @@ const { productTitle = "" } = Astro.props;
       <textarea name="comment" rows="4" placeholder="Удобное время, подъезд, пожелания"></textarea>
     </label>
   </div>
-  <button class="button button-accent" type="submit">Отправить в WhatsApp</button>
+  <div class="form-actions">
+    <button class="button button-accent" type="submit">Отправить заявку в WhatsApp</button>
+    <a class="button button-outline" href="tel:+74950329998">Позвонить</a>
+  </div>
   <p class="form-note">
     Форма не отправляет данные на сервер. После нажатия откроется WhatsApp с заполненным текстом заявки.
   </p>

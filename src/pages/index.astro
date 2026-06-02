@@ -10,6 +10,7 @@ import { faqSchema } from "@lib/schema";
 import { site } from "@lib/site";
 
 const popularProducts = getPopularProducts(6);
+const heroWhatsappText = encodeURIComponent("Здравствуйте! Хочу узнать стоимость бетона и доставки.");
 const faqItems = [
   {
     question: "Цены указаны с доставкой?",
@@ -36,9 +37,14 @@ const faqItems = [
           Каталог бетонных смесей, цены за 1 м³ и заявка на поставку бетона от завода.
           Работаем с объектами в Москве и Московской области.
         </p>
+        <div class="hero-points" aria-label="Преимущества поставки">
+          <span>Доставка по Москве и области</span>
+          <span>Цены за 1 м³</span>
+          <span>Расчет под объект</span>
+        </div>
         <div class="hero-actions">
-          <a class="button button-accent" href="/#prices">Смотреть цены</a>
-          <a class="button button-primary" href="/catalog/">Перейти в каталог</a>
+          <a class="button button-primary hero-catalog-cta" href="/catalog/">Смотреть каталог и цены</a>
+          <a class="button button-whatsapp" href={`${site.whatsappHref}?text=${heroWhatsappText}`}>Написать в WhatsApp</a>
         </div>
         <div class="hero-stats" aria-label="Ключевые сведения">
           <div class="stat"><strong>{products.length}</strong><span>позиций в примере каталога</span></div>
@@ -47,12 +53,17 @@ const faqItems = [
         </div>
       </div>
       <div class="hero-media">
-        <img src="/images/hero-concrete.svg" alt="Бетонный завод и автобетоносмеситель" loading="eager" />
+        <img src="/images/lider-beton-hero-zavod.webp" alt="Бетонный завод ЛИДЕР БЕТОН ГРУПП" loading="eager" />
+        <span class="hero-region-badge">Москва и МО</span>
+        <div class="hero-media-card">
+          <strong>Бетон, растворы и смеси</strong>
+          <span>Подберем марку, объем и доставку под задачу</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="prices">
+  <section class="section prices-section" id="prices">
     <div class="container">
       <div class="section-title">
         <p class="eyebrow">Цены</p>
@@ -62,7 +73,7 @@ const faqItems = [
           Итоговая стоимость доставки рассчитывается индивидуально.
         </p>
       </div>
-      <CategoryGrid categories={categoryPages} />
+      <CategoryGrid categories={categoryPages} variant="featured" />
     </div>
   </section>
 
@@ -79,30 +90,71 @@ const faqItems = [
   </section>
 
   <section class="section section-white">
-    <div class="container grid grid-3">
-      <article class="info-card">
-        <h3>Понятные цены</h3>
-        <p>В каталоге указана цена за 1 м³ без учета доставки. Итоговый расчет зависит от адреса и объема.</p>
-      </article>
-      <article class="info-card">
-        <h3>Каталог готов к расширению</h3>
-        <p>Товары и страницы каталога генерируются из JSON-данных, поэтому список можно расширять без ручной верстки.</p>
-      </article>
-      <article class="info-card">
-        <h3>Удобная заявка</h3>
-        <p>Форма формирует сообщение и открывает WhatsApp без backend и хранения персональных данных.</p>
-      </article>
+    <div class="container home-info-section">
+      <div class="section-title">
+        <p class="eyebrow">Преимущества</p>
+        <h2>Почему выбирают нас</h2>
+      </div>
+      <div class="home-info-grid">
+        <article class="info-card why-card">
+          <span class="info-card-icon" aria-hidden="true">01</span>
+          <h3>Собственный завод</h3>
+          <p>Собственный завод и поставка по Москве и МО.</p>
+        </article>
+        <article class="info-card why-card">
+          <span class="info-card-icon" aria-hidden="true">02</span>
+          <h3>Расчет доставки</h3>
+          <p>Расчет доставки по адресу и объему.</p>
+        </article>
+        <article class="info-card why-card">
+          <span class="info-card-icon" aria-hidden="true">03</span>
+          <h3>Подбор марки</h3>
+          <p>Подбор марки под задачу.</p>
+        </article>
+      </div>
+
+      <div class="section-title order-title">
+        <p class="eyebrow">Заказ</p>
+        <h2>Как заказать</h2>
+      </div>
+      <div class="order-steps">
+        <article class="order-step">
+          <span>1</span>
+          <h3>Связь</h3>
+          <p>Связь через телефон и мессенджеры.</p>
+        </article>
+        <article class="order-step">
+          <span>2</span>
+          <h3>Адрес и объем</h3>
+          <p>Расчет доставки по адресу и объему.</p>
+        </article>
+        <article class="order-step">
+          <span>3</span>
+          <h3>Марка</h3>
+          <p>Подбор марки под задачу.</p>
+        </article>
+        <article class="order-step">
+          <span>4</span>
+          <h3>Поставка</h3>
+          <p>Поставка по Москве и МО.</p>
+        </article>
+      </div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section request-section">
     <div class="container request-panel">
-      <div>
+      <div class="request-copy">
         <div class="section-title">
-          <p class="eyebrow">Доставка</p>
-          <h2>Расчет доставки индивидуальный</h2>
-          <p>{site.deliveryText}</p>
+          <p class="eyebrow">Заявка</p>
+          <h2>Рассчитать бетон и доставку</h2>
+          <p>Подберем марку под задачу и рассчитаем доставку по адресу и объему. Связаться можно через телефон и мессенджеры.</p>
         </div>
+        <ul class="request-points">
+          <li>Поставка по Москве и МО</li>
+          <li>Расчет доставки по адресу и объему</li>
+          <li>Подбор марки под задачу</li>
+        </ul>
         <ContactButtons />
       </div>
       <RequestForm />
@@ -129,13 +181,13 @@ const faqItems = [
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section-white contact-map-section">
     <div class="container grid grid-2">
       <div>
         <div class="section-title">
-          <p class="eyebrow">Контакты</p>
-          <h2>Связаться с отделом продаж</h2>
-          <p>{site.phonePrimary}, {site.phoneSecondary}</p>
+          <p class="eyebrow">Карта</p>
+          <h2>Контакты и точка завода</h2>
+          <p>Связь через телефон и мессенджеры. Поставка по Москве и МО.</p>
         </div>
         <ContactButtons />
       </div>

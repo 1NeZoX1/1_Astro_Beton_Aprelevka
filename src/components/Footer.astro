@@ -10,19 +10,22 @@ import { navItems, site } from "@lib/site";
         <span class="brand-text">{site.name}</span>
       </a>
       <p>{site.legalName}</p>
-      <p class="muted">{site.priceNote}</p>
+      <p class="muted">Поставка бетона и строительных смесей по Москве и МО.</p>
     </div>
 
     <nav class="footer-nav" aria-label="Навигация в подвале">
+      <h3>Разделы</h3>
       {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
       <a href="/politika-konfidentsialnosti/">Политика конфиденциальности</a>
     </nav>
 
     <div class="footer-contacts">
+      <h3>Связаться</h3>
       <a href="tel:+74950329998">{site.phonePrimary}</a>
       <a href="tel:+74950326040">{site.phoneSecondary}</a>
       <a href={site.whatsappHref}>WhatsApp: {site.whatsapp}</a>
       <a href={site.maxHref}>MAX</a>
+      <a class="button button-accent footer-button" href="/kontakty/#request">Заказать бетон</a>
     </div>
   </div>
 </footer>

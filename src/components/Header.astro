@@ -6,7 +6,10 @@ import { navItems, site } from "@lib/site";
   <div class="container header-inner">
     <a class="brand" href="/" aria-label={site.name}>
       <span class="brand-mark">LBG</span>
-      <span class="brand-text">{site.name}</span>
+      <span class="brand-text">
+        <span>{site.name}</span>
+        <small>Бетон с доставкой</small>
+      </span>
     </a>
 
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
@@ -18,11 +21,21 @@ import { navItems, site } from "@lib/site";
 
     <nav id="site-menu" class="site-nav" aria-label="Основная навигация">
       {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
+      <div class="mobile-nav-actions">
+        <a class="phone-link" href="tel:+74950329998">
+          <span>Отдел продаж</span>
+          <strong>{site.phonePrimary}</strong>
+        </a>
+        <a class="button button-accent header-cta" href="/kontakty/#request">Заказать бетон</a>
+      </div>
     </nav>
 
     <div class="header-actions">
-      <a class="phone-link" href="tel:+74950329998">{site.phonePrimary}</a>
-      <a class="button button-accent" href="/kontakty/#request">Заказать бетон</a>
+      <a class="phone-link" href="tel:+74950329998">
+        <span>Отдел продаж</span>
+        <strong>{site.phonePrimary}</strong>
+      </a>
+      <a class="button button-accent header-cta" href="/kontakty/#request">Заказать бетон</a>
     </div>
   </div>
 </header>
