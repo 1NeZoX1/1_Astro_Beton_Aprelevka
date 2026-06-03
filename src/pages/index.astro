@@ -1,38 +1,46 @@
 ---
 import CategoryGrid from "@components/CategoryGrid.astro";
-import ContactButtons from "@components/ContactButtons.astro";
-import ProductCard from "@components/ProductCard.astro";
 import RequestForm from "@components/RequestForm.astro";
-import YandexMap from "@components/YandexMap.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { categories, categoryPages, getPopularProducts, products } from "@lib/catalog";
+import { categories, categoryPages, products } from "@lib/catalog";
 import { faqSchema } from "@lib/schema";
 import { site } from "@lib/site";
 
-const popularProducts = getPopularProducts(6);
 const heroWhatsappText = encodeURIComponent("Здравствуйте! Хочу узнать стоимость бетона и доставки.");
 const faqItems = [
   {
     question: "Цены указаны с доставкой?",
-    answer: site.priceNote
+    answer: "Нет, цены указаны за 1 м³ без учёта доставки. Итоговая стоимость рассчитывается индивидуально по адресу объекта и объёму заказа."
   },
   {
-    question: "Можно ли заказать бетон по Московской области?",
-    answer: "Да, заявки принимаются для объектов в Москве и Московской области. Стоимость доставки рассчитывается индивидуально."
+    question: "Как рассчитать стоимость доставки?",
+    answer: "Для расчёта нужны марка бетона или смеси, объём и адрес доставки. Эти данные можно отправить через форму, WhatsApp, MAX или сообщить по телефону."
   },
   {
-    question: "Как быстро уточнить цену?",
-    answer: "Оставьте заявку через форму, WhatsApp, MAX или позвоните по телефону. Для расчета нужны марка бетона, объем и адрес доставки."
+    question: "Можно ли заказать бетон в Московскую область?",
+    answer: "Да, принимаем заявки для объектов в Москве и Московской области. Возможность и стоимость доставки рассчитываются по адресу."
+  },
+  {
+    question: "Какой объём можно заказать?",
+    answer: "Базовая единица цены — 1 м³. Итоговый объём и условия поставки уточняются при расчёте заявки."
+  },
+  {
+    question: "Поможете подобрать марку бетона?",
+    answer: "Да, можно описать задачу, тип работ и условия объекта. Мы поможем подобрать подходящую марку и рассчитать стоимость."
+  },
+  {
+    question: "Как оформить заявку?",
+    answer: "Оставьте заявку через форму на сайте, напишите в WhatsApp или MAX либо позвоните по телефону отдела продаж."
   }
 ];
 ---
 
-<BaseLayout title={site.title} description={site.description} structuredData={[faqSchema(faqItems)]}>
+<BaseLayout title={site.title} description={site.description} structuredData={[faqSchema(faqItems)]} showBottomMap={false}>
   <section class="hero">
     <div class="container hero-grid">
       <div>
         <p class="eyebrow">{site.legalName}</p>
-        <h1>{site.title}</h1>
+        <h1>Бетон с доставкой<br />по Москве и области</h1>
         <p class="lead">
           Каталог бетонных смесей, цены за 1 м³ и заявка на поставку бетона от завода.
           Работаем с объектами в Москве и Московской области.
@@ -68,24 +76,9 @@ const faqItems = [
       <div class="section-title">
         <p class="eyebrow">Цены</p>
         <h2>Цены на бетон и строительные смеси</h2>
-        <p>
-          Выберите категорию, чтобы посмотреть актуальные позиции и стоимость за 1 м³.
-          Итоговая стоимость доставки рассчитывается индивидуально.
-        </p>
+        <p>Выберите категорию, чтобы посмотреть марки, позиции и стоимость за 1 м³. Итоговая стоимость доставки рассчитывается индивидуально.</p>
       </div>
       <CategoryGrid categories={categoryPages} variant="featured" />
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <div class="section-title">
-        <p class="eyebrow">Популярные позиции</p>
-        <h2>Бетон с доставкой от завода</h2>
-      </div>
-      <div class="grid grid-3">
-        {popularProducts.map((product) => <ProductCard product={product} />)}
-      </div>
     </div>
   </section>
 
@@ -93,51 +86,74 @@ const faqItems = [
     <div class="container home-info-section">
       <div class="section-title">
         <p class="eyebrow">Преимущества</p>
-        <h2>Почему выбирают нас</h2>
+        <h2>Производство, контроль и доставка бетона</h2>
+        <p>Производим бетон и растворы на площадке в Апрелевке, контролируем состав в лаборатории и организуем доставку по Москве и Московской области.</p>
       </div>
       <div class="home-info-grid">
-        <article class="info-card why-card">
-          <span class="info-card-icon" aria-hidden="true">01</span>
-          <h3>Собственный завод</h3>
-          <p>Собственный завод и поставка по Москве и МО.</p>
+        <article class="trust-card">
+          <div class="trust-card-media">
+            <img src="/images/lider-beton-aprelevka-plant.webp" alt="Завод по производству бетона в Апрелевке" loading="lazy" decoding="async" />
+          </div>
+          <div class="trust-card-body">
+            <h3>Завод в Апрелевке</h3>
+            <p>Производственная площадка для выпуска бетона и растворов. Удобная логистика для объектов в Москве и Московской области.</p>
+          </div>
         </article>
-        <article class="info-card why-card">
-          <span class="info-card-icon" aria-hidden="true">02</span>
-          <h3>Расчет доставки</h3>
-          <p>Расчет доставки по адресу и объему.</p>
+        <article class="trust-card">
+          <div class="trust-card-media">
+            <img src="/images/lider-beton-laboratory.webp" alt="Лаборатория контроля качества бетонных смесей" loading="lazy" decoding="async" />
+          </div>
+          <div class="trust-card-body">
+            <h3>Собственная лаборатория</h3>
+            <p>Контроль состава и характеристик бетонных смесей. Помогаем подобрать марку под фундамент, монолитные работы и стяжки.</p>
+          </div>
         </article>
-        <article class="info-card why-card">
-          <span class="info-card-icon" aria-hidden="true">03</span>
-          <h3>Подбор марки</h3>
-          <p>Подбор марки под задачу.</p>
+        <article class="trust-card">
+          <div class="trust-card-media">
+            <img src="/images/lider-beton-delivery-mixers.webp" alt="Автобетоносмесители для доставки бетона на объект" loading="lazy" decoding="async" />
+          </div>
+          <div class="trust-card-body">
+            <h3>Доставка под объект</h3>
+            <p>Рассчитываем доставку по адресу и объёму, согласуем время поставки и удобный способ связи.</p>
+          </div>
         </article>
       </div>
 
       <div class="section-title order-title">
         <p class="eyebrow">Заказ</p>
         <h2>Как заказать</h2>
+        <p>Для расчёта достаточно указать марку, объём и адрес доставки. Позвоните, напишите в WhatsApp или MAX — либо отправьте заявку через форму ниже.</p>
       </div>
       <div class="order-steps">
         <article class="order-step">
           <span>1</span>
-          <h3>Связь</h3>
-          <p>Связь через телефон и мессенджеры.</p>
+          <h3>Свяжитесь с нами</h3>
+          <p>Позвоните, напишите в WhatsApp или MAX, либо заполните форму ниже.</p>
         </article>
         <article class="order-step">
           <span>2</span>
-          <h3>Адрес и объем</h3>
-          <p>Расчет доставки по адресу и объему.</p>
+          <h3>Укажите данные</h3>
+          <p>Сообщите марку бетона, объём и адрес доставки.</p>
         </article>
         <article class="order-step">
           <span>3</span>
-          <h3>Марка</h3>
-          <p>Подбор марки под задачу.</p>
+          <h3>Получите расчёт</h3>
+          <p>Рассчитаем стоимость смеси и доставки индивидуально.</p>
         </article>
         <article class="order-step">
           <span>4</span>
-          <h3>Поставка</h3>
-          <p>Поставка по Москве и МО.</p>
+          <h3>Согласуйте поставку</h3>
+          <p>Уточним детали заказа, время доставки и удобный способ связи.</p>
         </article>
+      </div>
+      <div class="order-cta">
+        <p>Подготовьте марку, объём и адрес — рассчитаем стоимость под ваш объект.</p>
+        <div class="order-cta-actions">
+          <a class="button button-outline" href="tel:+74950329998">Позвонить</a>
+          <a class="button button-outline" href={site.whatsappHref}>WhatsApp</a>
+          <a class="button button-outline" href={site.maxHref}>MAX</a>
+          <a class="button button-accent" href="#request">Перейти к заявке</a>
+        </div>
       </div>
     </div>
   </section>
@@ -148,14 +164,21 @@ const faqItems = [
         <div class="section-title">
           <p class="eyebrow">Заявка</p>
           <h2>Рассчитать бетон и доставку</h2>
-          <p>Подберем марку под задачу и рассчитаем доставку по адресу и объему. Связаться можно через телефон и мессенджеры.</p>
+          <p>Укажите марку, объём и адрес объекта — подготовим расчёт стоимости бетона и доставки. Связаться можно по телефону, в WhatsApp или MAX.</p>
         </div>
         <ul class="request-points">
-          <li>Поставка по Москве и МО</li>
-          <li>Расчет доставки по адресу и объему</li>
+          <li>Доставка по Москве и МО</li>
+          <li>Расчёт по адресу и объёму</li>
           <li>Подбор марки под задачу</li>
         </ul>
-        <ContactButtons />
+        <p class="request-contact-title">Связаться напрямую</p>
+        <div class="contact-buttons request-contact-buttons">
+          <a class="button button-primary" href="tel:+74950329998">+7 (495) 032-99-98</a>
+          <a class="button button-outline" href="tel:+74950326040">+7 (495) 032-60-40</a>
+          <a class="button button-outline" href={site.whatsappHref}>WhatsApp</a>
+          <a class="button button-outline" href={site.maxHref}>MAX</a>
+        </div>
+        <p class="request-copy-note">Форма подготовит заявку для WhatsApp, а MAX можно открыть для связи.</p>
       </div>
       <RequestForm />
     </div>
@@ -165,33 +188,85 @@ const faqItems = [
     <div class="container">
       <div class="section-title">
         <p class="eyebrow">Примеры работ</p>
-        <h2>Галерея-заглушка для будущих фотографий</h2>
+        <h2>Примеры поставки бетона на объекты</h2>
+        <p>Поставляем бетон, растворы и строительные смеси для жилых, частных и промышленных объектов в Москве и Московской области.</p>
       </div>
       <div class="grid grid-3">
-        {["Жилой комплекс, Москва", "Частный дом, Подмосковье", "Промышленный объект"].map((title) => (
-          <article class="work-card">
-            <img src="/images/product-placeholder.svg" alt="" loading="lazy" />
-            <div class="work-card-body">
-              <h3>{title}</h3>
-              <p>Район/город и марка бетона будут уточнены после добавления реальных фотографий объекта.</p>
-            </div>
-          </article>
-        ))}
+        <article class="work-card">
+          <div class="work-card-media">
+            <img src="/images/lider-beton-work-urban-delivery.webp" alt="Доставка бетона на жилой объект в Москве" loading="lazy" decoding="async" />
+          </div>
+          <div class="work-card-body">
+            <h3>Доставка на жилой объект</h3>
+            <p>Поставка бетонной смеси на городской объект с подачей к месту работ.</p>
+          </div>
+        </article>
+        <article class="work-card">
+          <div class="work-card-media">
+            <img src="/images/lider-beton-work-pump-industrial.webp" alt="Подача бетона на строительной площадке с использованием бетононасоса" loading="lazy" decoding="async" />
+          </div>
+          <div class="work-card-body">
+            <h3>Подача бетона на площадке</h3>
+            <p>Работы с использованием техники для подачи бетонной смеси на объекте.</p>
+          </div>
+        </article>
+        <article class="work-card">
+          <div class="work-card-media">
+            <img src="/images/lider-beton-work-private-slab.webp" alt="Бетонная плита под частный дом" loading="lazy" decoding="async" />
+          </div>
+          <div class="work-card-body">
+            <h3>Плита под частный дом</h3>
+            <p>Бетон для устройства основания и монолитных работ на частном объекте.</p>
+          </div>
+        </article>
+      </div>
+      <div class="work-actions">
+        <a class="button button-outline" href="/primery-rabot/">Смотреть все примеры</a>
       </div>
     </div>
   </section>
 
   <section class="section section-white contact-map-section">
     <div class="container grid grid-2">
-      <div>
+      <div class="contact-map-copy">
         <div class="section-title">
           <p class="eyebrow">Карта</p>
           <h2>Контакты и точка завода</h2>
-          <p>Связь через телефон и мессенджеры. Поставка по Москве и МО.</p>
+          <p>Свяжитесь с отделом продаж — рассчитаем стоимость бетона и доставки по адресу объекта.</p>
         </div>
-        <ContactButtons />
+        <ul class="contact-info-list">
+          <li><span>Точка завода</span><strong>Апрелевка, Сентябрьская ул., 12</strong></li>
+          <li><span>Доставка</span><strong>Москва и Московская область</strong></li>
+          <li><span>Расчёт</span><strong>по адресу и объёму</strong></li>
+        </ul>
+        <div class="contact-map-buttons">
+          <a class="button button-primary" href="tel:+74950329998">+7 (495) 032-99-98</a>
+          <a class="button button-outline" href="tel:+74950326040">+7 (495) 032-60-40</a>
+          <a class="button button-outline" href={site.whatsappHref}>WhatsApp</a>
+          <a class="button button-outline" href={site.maxHref}>MAX</a>
+        </div>
       </div>
-      <YandexMap />
+      <div class="map-fallback-card">
+        <div class="map-widget-frame">
+          <iframe
+            src={site.yandexMapWidgetSrc}
+            title="Бетонный завод Апрелевка на Яндекс.Картах"
+            width="100%"
+            height="400"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            style="border:0;"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="map-fallback-copy">
+          <h3>Точка завода на Яндекс.Картах</h3>
+          <p>Если карта не отображается, откройте точку завода в отдельном окне.</p>
+          <a class="button button-accent" href={site.yandexMapHref} target="_blank" rel="noopener noreferrer">
+            Открыть точку на Яндекс.Картах
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -201,10 +276,10 @@ const faqItems = [
         <p class="eyebrow">FAQ</p>
         <h2>Частые вопросы</h2>
       </div>
-      <div class="grid">
-        {faqItems.map((item) => (
-          <details class="info-card">
-            <summary><strong>{item.question}</strong></summary>
+      <div class="faq-list">
+        {faqItems.map((item, index) => (
+          <details class="faq-item" open={index === 0}>
+            <summary>{item.question}</summary>
             <p>{item.answer}</p>
           </details>
         ))}

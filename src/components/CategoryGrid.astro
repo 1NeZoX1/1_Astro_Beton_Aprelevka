@@ -1,5 +1,12 @@
 ---
-import type { CategoryPage } from "@lib/catalog";
+import {
+  formatPrice,
+  getCpsProductType,
+  getEquipmentServiceType,
+  getProductClassLabel,
+  getProductMarkNumber
+} from "@lib/catalog";
+import type { CategoryPage, Product } from "@lib/catalog";
 
 type Props = {
   categories: CategoryPage[];
@@ -18,22 +25,170 @@ const categoryIcons: Record<string, string> = {
   "arenda-tehniki": "M8 30h5l5-12h13l6 8h3v8h-4M18 34h12M13 34a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm23 0a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
   drugoe: "M24 10v28M10 24h28"
 };
+
+function getMinPrice(products: Product[]): number | undefined {
+  const prices = products
+    .map((product) => Number(product.price))
+    .filter((price) => Number.isFinite(price) && price > 0);
+
+  return prices.length > 0 ? Math.min(...prices) : undefined;
+}
+
+function getPriceFrom(category: CategoryPage): string {
+  if (category.slug === "drugoe") {
+    return "по запросу";
+  }
+
+  const minPrice = getMinPrice(category.products);
+
+  if (!minPrice) {
+    return "по запросу";
+  }
+
+  const unit = category.slug === "arenda-tehniki" ? "" : "/м³";
+  return `${formatPrice(minPrice)} ₽${unit}`;
+}
+
+function getMarkRange(products: Product[]): string | undefined {
+  const marks = Array.from(new Set(products.map((product) => getProductMarkNumber(product.title)).filter(Boolean))).sort(
+    (a, b) => a - b
+  );
+
+  if (marks.length === 0) {
+    return undefined;
+  }
+
+  if (marks.length === 1) {
+    return `М${marks[0]}`;
+  }
+
+  return `М${marks[0]}–М${marks[marks.length - 1]}`;
+}
+
+function getPmdRange(products: Product[]): string | undefined {
+  const pmdValues = Array.from(
+    new Set(
+      products
+        .map((product) => product.pmdGroup?.match(/\d+/)?.[0])
+        .filter((value): value is string => Boolean(value))
+        .map(Number)
+    )
+  ).sort((a, b) => a - b);
+
+  if (pmdValues.length === 0) {
+    return undefined;
+  }
+
+  if (pmdValues.length === 1) {
+    return `ПМД-${pmdValues[0]}`;
+  }
+
+  return `ПМД-${pmdValues[0]}–ПМД-${pmdValues[pmdValues.length - 1]}`;
+}
+
+function getClassRange(products: Product[]): string | undefined {
+  const classes = Array.from(
+    new Set(products.map((product) => getProductClassLabel(product.title)).filter((value): value is string => Boolean(value)))
+  ).sort((a, b) => Number(a.replace("B", "")) - Number(b.replace("B", "")));
+
+  if (classes.length === 0) {
+    return undefined;
+  }
+
+  if (classes.length === 1) {
+    return classes[0];
+  }
+
+  return `${classes[0]}–${classes[classes.length - 1]}`;
+}
+
+function getTypeSummary(category: CategoryPage): string | undefined {
+  if (category.slug === "rastvory-i-cps") {
+    const types = new Set(category.products.map(getCpsProductType));
+    return types.size > 0 ? "растворы, пескобетон, ЦПС" : undefined;
+  }
+
+  if (category.slug === "arenda-tehniki") {
+    const types = new Set(category.products.map(getEquipmentServiceType));
+    return types.size > 0 ? "автобетононасос, миксер с насосом" : undefined;
+  }
+
+  return undefined;
+}
+
+function getRangeLabel(category: CategoryPage): string {
+  const rangeBySlug: Record<string, string | undefined> = {
+    beton: getMarkRange(category.products),
+    "beton-s-pmd": getPmdRange(category.products),
+    fibrobeton: getMarkRange(category.products),
+    keramzitobeton: getClassRange(category.products),
+    "suhoy-beton": getMarkRange(category.products),
+    "rastvory-i-cps": getTypeSummary(category),
+    "arenda-tehniki": getTypeSummary(category)
+  };
+
+  const label = rangeBySlug[category.slug];
+
+  if (!label) {
+    return "Дополнительные позиции";
+  }
+
+  if (["beton", "fibrobeton", "suhoy-beton"].includes(category.slug)) {
+    return `Марки: ${label}`;
+  }
+
+  if (category.slug === "keramzitobeton") {
+    return `Классы: ${label}`;
+  }
+
+  if (["beton-s-pmd", "rastvory-i-cps", "arenda-tehniki"].includes(category.slug)) {
+    return `Типы: ${label}`;
+  }
+
+  return label;
+}
 ---
 
 <div class={`catalog-category-grid catalog-category-grid-${variant}`}>
   {categories.map((category) => (
     <a class="catalog-category-card" href={`/catalog/${category.slug}/`}>
-      <span class={`catalog-category-icon catalog-category-icon-${category.slug}`} aria-hidden="true">
-        <svg viewBox="0 0 48 48" focusable="false">
-          <path d={categoryIcons[category.slug] ?? categoryIcons.drugoe}></path>
-        </svg>
-      </span>
-      <span class="catalog-category-count">{category.products.length} поз.</span>
+      {variant === "featured" ? (
+        <span class="catalog-category-top">
+          <span class={`catalog-category-icon catalog-category-icon-${category.slug}`} aria-hidden="true">
+            <svg viewBox="0 0 48 48" focusable="false">
+              <path d={categoryIcons[category.slug] ?? categoryIcons.drugoe}></path>
+            </svg>
+          </span>
+          <span class="catalog-category-count">{category.products.length} поз.</span>
+        </span>
+      ) : (
+        <>
+          <span class={`catalog-category-icon catalog-category-icon-${category.slug}`} aria-hidden="true">
+            <svg viewBox="0 0 48 48" focusable="false">
+              <path d={categoryIcons[category.slug] ?? categoryIcons.drugoe}></path>
+            </svg>
+          </span>
+          <span class="catalog-category-count">{category.products.length} поз.</span>
+        </>
+      )}
       <div class="catalog-category-body">
         <h2>{category.title}</h2>
         <p>{category.description}</p>
       </div>
-      <span class="button button-small button-accent">Смотреть цены</span>
+      {variant === "featured" ? (
+        <span class="catalog-category-footer">
+          <span class="catalog-category-meta">
+            <span class="catalog-category-range">{getRangeLabel(category)}</span>
+            <span class="catalog-category-price">
+              <span>Цена от</span>
+              <strong>{getPriceFrom(category)}</strong>
+            </span>
+          </span>
+          <span class="button button-small button-accent">Смотреть цены</span>
+        </span>
+      ) : (
+        <span class="button button-small button-accent">Смотреть цены</span>
+      )}
     </a>
   ))}
 </div>

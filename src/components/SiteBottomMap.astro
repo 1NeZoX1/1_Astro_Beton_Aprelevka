@@ -10,13 +10,17 @@ import { site } from "@lib/site";
       <h2>Завод на карте</h2>
       <p>
         Поставка бетона по Москве и Московской области. Итоговая стоимость
-        рассчитывается с учетом адреса объекта и объема заказа.
+        рассчитывается с учётом адреса объекта и объёма заказа.
       </p>
+      <div class="bottom-map-address">
+        <span>Адрес завода</span>
+        <strong>Апрелевка, Сентябрьская ул., 12</strong>
+      </div>
       <div class="bottom-map-contacts">
-        <a href="tel:+74950329998">{site.phonePrimary}</a>
-        <a href="tel:+74950326040">{site.phoneSecondary}</a>
-        <a href={site.whatsappHref}>WhatsApp: {site.whatsapp}</a>
-        <a href={site.maxHref}>MAX</a>
+        <a class="button button-outline" href="tel:+74950329998">{site.phonePrimary}</a>
+        <a class="button button-outline" href="tel:+74950326040">{site.phoneSecondary}</a>
+        <a class="button button-outline" href={site.whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a class="button button-outline" href={site.maxHref} target="_blank" rel="noopener noreferrer">MAX</a>
       </div>
     </div>
     <YandexMap />

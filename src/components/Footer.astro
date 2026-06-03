@@ -4,13 +4,14 @@ import { navItems, site } from "@lib/site";
 
 <footer class="site-footer">
   <div class="container footer-grid">
-    <div>
+    <div class="footer-about">
       <a class="brand footer-brand" href="/">
         <span class="brand-mark">LBG</span>
         <span class="brand-text">{site.name}</span>
       </a>
-      <p>{site.legalName}</p>
-      <p class="muted">Поставка бетона и строительных смесей по Москве и МО.</p>
+      <p class="footer-legal">{site.legalName}</p>
+      <p class="footer-description">Поставка бетона, растворов и строительных смесей по Москве и Московской области.</p>
+      <p class="footer-address">Апрелевка, Сентябрьская ул., 12</p>
     </div>
 
     <nav class="footer-nav" aria-label="Навигация в подвале">
@@ -23,9 +24,14 @@ import { navItems, site } from "@lib/site";
       <h3>Связаться</h3>
       <a href="tel:+74950329998">{site.phonePrimary}</a>
       <a href="tel:+74950326040">{site.phoneSecondary}</a>
-      <a href={site.whatsappHref}>WhatsApp: {site.whatsapp}</a>
-      <a href={site.maxHref}>MAX</a>
+      <a href={site.whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp: {site.whatsapp}</a>
+      <a href={site.maxHref} target="_blank" rel="noopener noreferrer">MAX: {site.whatsapp}</a>
       <a class="button button-accent footer-button" href="/kontakty/#request">Заказать бетон</a>
     </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>© 2026 {site.legalName}</p>
+    <p>Цены на сайте указаны за 1 м³ без учёта доставки. Итоговая стоимость рассчитывается индивидуально.</p>
+    <a href="/politika-konfidentsialnosti/">Политика конфиденциальности</a>
   </div>
 </footer>

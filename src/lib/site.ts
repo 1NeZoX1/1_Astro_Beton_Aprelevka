@@ -10,7 +10,9 @@ export const site = {
   whatsapp: "+7 986 703-74-24",
   whatsappHref: "https://wa.me/79867037424",
   maxHref: "https://max.ru/79867037424",
-  yandexMapHref: "https://yandex.ru/maps/-/CPTBuNph",
+  yandexMapHref: "https://yandex.ru/maps/-/CPTxRR8M",
+  yandexMapWidgetSrc:
+    "https://yandex.ru/map-widget/v1/?ll=37.071927%2C55.549429&z=16&pt=37.071927%2C55.549429%2Cpm2rdm",
   priceNote:
     "Цены указаны за 1 м³ без учета доставки. Итоговая стоимость рассчитывается индивидуально.",
   deliveryText:

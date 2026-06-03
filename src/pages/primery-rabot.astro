@@ -4,45 +4,77 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 
 const works = [
   {
-    title: "Жилой комплекс",
-    location: "Москва",
-    concrete: "Бетон М300",
-    text: "Карточка-заглушка для будущей фотографии и описания поставки."
+    src: "/images/gallery/lider-beton-gallery-urban-delivery.webp",
+    alt: "Доставка бетона на жилой объект в Москве",
+    title: "Доставка на жилой объект",
+    text: "Поставка бетонной смеси на городской объект с подачей к месту работ."
   },
   {
-    title: "Частный дом",
-    location: "Московская область",
-    concrete: "Бетон М250",
-    text: "После добавления реальных материалов здесь будет описание объекта."
+    src: "/images/gallery/lider-beton-gallery-industrial-pump.webp",
+    alt: "Подача бетона на строительной площадке с использованием бетононасоса",
+    title: "Подача бетона на площадке",
+    text: "Работы с использованием техники для подачи бетонной смеси на объекте."
   },
   {
-    title: "Промышленная площадка",
-    location: "Подмосковье",
-    concrete: "Бетон М350",
-    text: "Блок подготовлен под замену изображения и уточнение деталей."
+    src: "/images/gallery/lider-beton-gallery-private-slab.webp",
+    alt: "Бетонная плита под частный дом",
+    title: "Плита под частный дом",
+    text: "Бетон для устройства основания и монолитных работ на частном объекте."
+  },
+  {
+    src: "/images/gallery/lider-beton-gallery-private-forest-slab.webp",
+    alt: "Бетонная плита на частном участке",
+    title: "Частное строительство",
+    text: "Поставка бетона для основания и работ на частном объекте."
+  },
+  {
+    src: "/images/gallery/lider-beton-gallery-monolithic-works.webp",
+    alt: "Монолитные работы на строительном участке",
+    title: "Монолитные работы",
+    text: "Бетонирование основания и подготовка конструкций на объекте."
+  },
+  {
+    src: "/images/gallery/lider-beton-gallery-foundation-pour.webp",
+    alt: "Подача бетона в фундамент",
+    title: "Подача бетона в фундамент",
+    text: "Подача бетонной смеси в подготовленную зону фундамента."
+  },
+  {
+    src: "/images/gallery/lider-beton-gallery-pump-large-site.webp",
+    alt: "Бетонирование площадки с использованием бетононасоса",
+    title: "Бетонирование площадки",
+    text: "Поставка и подача бетона на крупной строительной площадке."
+  },
+  {
+    src: "/images/gallery/lider-beton-gallery-winter-reinforcement.webp",
+    alt: "Армирование и подготовка основания перед бетонированием",
+    title: "Подготовка основания",
+    text: "Армирование и подготовка плиты перед поставкой бетонной смеси."
   }
 ];
 ---
 
 <BaseLayout
   title="Примеры работ"
-  description="Галерея примеров работ ЛИДЕР БЕТОН ГРУПП. В первой версии используются заглушки под будущие реальные фотографии."
+  description="Примеры поставки бетона, растворов и строительных смесей для частного, жилого и промышленного строительства."
 >
   <section class="section-tight">
     <div class="container">
       <div class="section-title">
         <p class="eyebrow">Примеры работ</p>
-        <h1>Галерея-заглушка</h1>
-        <p>Раздел готов для дальнейшей замены заглушек на реальные фотографии объектов.</p>
+        <h1>Примеры поставки бетона</h1>
+        <p>Фотографии объектов, где выполнялась поставка бетона, растворов и строительных смесей для частного, жилого и промышленного строительства.</p>
       </div>
       <div class="grid grid-3">
         {works.map((work) => (
           <article class="work-card">
-            <img src="/images/product-placeholder.svg" alt="" loading="lazy" />
+            <div class="work-card-media">
+              <a href={work.src} target="_blank" rel="noopener noreferrer" aria-label={`Открыть фото: ${work.title}`}>
+                <img src={work.src} alt={work.alt} width="1200" height="750" loading="lazy" decoding="async" />
+              </a>
+            </div>
             <div class="work-card-body">
               <h3>{work.title}</h3>
-              <p><strong>Район/город:</strong> {work.location}</p>
-              <p><strong>Марка:</strong> {work.concrete}</p>
               <p>{work.text}</p>
             </div>
           </article>
@@ -55,8 +87,17 @@ const works = [
     <div class="container request-panel">
       <div class="section-title">
         <p class="eyebrow">Заявка</p>
-        <h2>Подобрать бетон для объекта</h2>
-        <p>Укажите тип работ, марку или проектные требования, объем и адрес доставки.</p>
+        <h2>Подобрать бетон для похожего объекта</h2>
+        <p>Опишите задачу, объём и адрес доставки — подготовим расчёт под ваш объект.</p>
+        <div class="work-request-info">
+          <h3>Что указать в заявке</h3>
+          <ul>
+            <li>Марку бетона или тип работ</li>
+            <li>Примерный объём</li>
+            <li>Адрес доставки</li>
+          </ul>
+          <p>В комментарии можно указать подъезд к объекту, удобное время поставки и требования к подаче.</p>
+        </div>
       </div>
       <RequestForm />
     </div>

@@ -8,9 +8,9 @@ const { productTitle = "" } = Astro.props;
 
 <form class="request-form js-request-form" id="request">
   <div class="form-head">
-    <p class="eyebrow">WhatsApp-заявка</p>
-    <h3>Получить расчет</h3>
-    <p>Заполните поля, и форма откроет WhatsApp с готовым текстом заявки.</p>
+    <p class="eyebrow">Заявка</p>
+    <h3>Получить расчёт</h3>
+    <p>Заполните поля — WhatsApp откроется с готовым текстом заявки, а MAX можно открыть для связи.</p>
   </div>
   <div class="form-grid">
     <label>
@@ -35,11 +35,12 @@ const { productTitle = "" } = Astro.props;
     </label>
   </div>
   <div class="form-actions">
-    <button class="button button-accent" type="submit">Отправить заявку в WhatsApp</button>
+    <button class="button button-accent" type="submit">Отправить в WhatsApp</button>
+    <a class="button button-outline" href="https://max.ru/79867037424">Открыть MAX</a>
     <a class="button button-outline" href="tel:+74950329998">Позвонить</a>
   </div>
   <p class="form-note">
-    Форма не отправляет данные на сервер. После нажатия откроется WhatsApp с заполненным текстом заявки.
+    Форма не отправляет данные на сервер. WhatsApp откроется с готовым текстом заявки, MAX откроется для связи.
   </p>
 </form>
 

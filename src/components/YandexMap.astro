@@ -8,12 +8,15 @@ import { site } from "@lib/site";
     <span>Откройте маршрут в отдельном окне</span>
   </div>
   <iframe
-    src={site.yandexMapHref}
-    title="Точка завода на Яндекс.Картах"
+    src={site.yandexMapWidgetSrc}
+    title="Бетонный завод Апрелевка на Яндекс.Картах"
+    width="100%"
     loading="lazy"
     referrerpolicy="no-referrer-when-downgrade"
+    style="border:0;"
+    allowfullscreen
   ></iframe>
-  <a class="button button-outline" href={site.yandexMapHref} target="_blank" rel="noreferrer">
+  <a class="button button-outline" href={site.yandexMapHref} target="_blank" rel="noopener noreferrer">
     Открыть точку на Яндекс.Картах
   </a>
 </div>

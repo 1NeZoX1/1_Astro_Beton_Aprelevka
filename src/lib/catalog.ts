@@ -57,6 +57,22 @@ export const CONCRETE_SUBCATEGORIES: ConcreteSubcategory[] = [
 ];
 
 export const PMD_GROUPS = ["ПМД-5", "ПМД-10", "ПМД-15", "Другое"] as const;
+export const PRODUCT_MARKS = ["М700", "М600", "М550", "М500", "М450", "М400", "М350", "М300", "М250", "М200", "М150", "М100"] as const;
+export const KERAMZIT_CLASSES = ["B40", "B35", "B30", "B25", "B20", "B15", "B12.5", "B10", "B7.5"] as const;
+export const CPS_PRODUCT_TYPES = [
+  "ЦПС",
+  "Монтажный раствор",
+  "Пескобетон",
+  "Кладочный / штукатурный раствор",
+  "Другое"
+] as const;
+export const EQUIPMENT_SERVICE_TYPES = [
+  "Автобетононасос",
+  "Миксер с насосом",
+  "Бетоноводы / шланги",
+  "Дополнительное оборудование",
+  "Другое"
+] as const;
 
 const DISPLAY_CATEGORIES: CategoryPage[] = [
   {
@@ -384,6 +400,84 @@ export function getPopularProducts(limit = 8): Product[] {
   return products.slice(0, limit);
 }
 
+export function getProductMarkNumber(title: string): number {
+  const match = title.match(/(?:^|\s)[МM](\d+)/i);
+  return match?.[1] ? Number(match[1]) : 0;
+}
+
+export function getProductMarkLabel(title: string): string | undefined {
+  const mark = getProductMarkNumber(title);
+  return mark > 0 ? `М${mark}` : undefined;
+}
+
+export function getProductClassLabel(title: string): string | undefined {
+  const match = title.match(/(?:^|[\s(])([BВ]\d+(?:[.,]\d+)?)/i);
+  if (!match?.[1]) {
+    return undefined;
+  }
+
+  return match[1].replace(/^В/i, "B").replace(",", ".").toUpperCase();
+}
+
+export function sortProductsByMarkPriceName(a: Product, b: Product): number {
+  const markA = getProductMarkNumber(a.title);
+  const markB = getProductMarkNumber(b.title);
+
+  if (markA !== markB) {
+    return markB - markA;
+  }
+
+  if (a.price !== b.price) {
+    return b.price - a.price;
+  }
+
+  return a.title.localeCompare(b.title, "ru");
+}
+
+export function getCpsProductType(product: Product): string {
+  const text = `${product.sourceCategory} ${product.title}`.toLowerCase();
+
+  if (text.includes("цпс")) {
+    return "ЦПС";
+  }
+
+  if (text.includes("монтажный раствор")) {
+    return "Монтажный раствор";
+  }
+
+  if (text.includes("пескобетон")) {
+    return "Пескобетон";
+  }
+
+  if (/кладочн|штукатурн/.test(text)) {
+    return "Кладочный / штукатурный раствор";
+  }
+
+  return "Другое";
+}
+
+export function getEquipmentServiceType(product: Product): string {
+  const text = `${product.sourceCategory} ${product.title}`.toLowerCase();
+
+  if (/миксер|pumi/.test(text)) {
+    return "Миксер с насосом";
+  }
+
+  if (/бетоновод|шланг|труба/.test(text)) {
+    return "Бетоноводы / шланги";
+  }
+
+  if (/доп\.|дополнитель/.test(text)) {
+    return "Дополнительное оборудование";
+  }
+
+  if (/автобетононасос|абн/.test(text)) {
+    return "Автобетононасос";
+  }
+
+  return "Другое";
+}
+
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat("ru-RU").format(price);
 }
@@ -396,8 +490,8 @@ export function formatProductPrice(product: Product): string {
 export function getProductSpecs(title: string): ProductSpec[] {
   const specs: ProductSpec[] = [];
   const patterns: Array<[string, RegExp]> = [
-    ["Марка", /(?:^|\s)(М\d+)/i],
-    ["Класс", /(?:^|\s)([BВ]\d+(?:[.,]\d+)?)/i],
+    ["Марка", /(?:^|\s)([МM]\d+)/i],
+    ["Класс", /(?:^|[\s(])([BВ]\d+(?:[.,]\d+)?)/i],
     ["Подвижность", /(?:^|\s)(П\d+)/i],
     ["Морозостойкость", /(?:^|\s)(F\d+)/i],
     ["Водонепроницаемость", /(?:^|\s)(W\d+)/i]
@@ -406,7 +500,7 @@ export function getProductSpecs(title: string): ProductSpec[] {
   for (const [label, pattern] of patterns) {
     const match = title.match(pattern);
     if (match?.[1]) {
-      specs.push({ label, value: match[1].toUpperCase() });
+      specs.push({ label, value: match[1].replace(/^M/i, "М").toUpperCase() });
     }
   }
 

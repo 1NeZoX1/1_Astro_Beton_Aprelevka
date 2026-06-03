@@ -4,10 +4,18 @@ import ProductCard from "@components/ProductCard.astro";
 import RequestForm from "@components/RequestForm.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
-  CONCRETE_SUBCATEGORIES,
+  CPS_PRODUCT_TYPES,
+  EQUIPMENT_SERVICE_TYPES,
+  KERAMZIT_CLASSES,
   PMD_GROUPS,
+  PRODUCT_MARKS,
   categories,
   categoryPages,
+  getCpsProductType,
+  getEquipmentServiceType,
+  getProductClassLabel,
+  getProductMarkLabel,
+  sortProductsByMarkPriceName,
   type CategoryPage,
   type Product
 } from "@lib/catalog";
@@ -29,9 +37,30 @@ const isConcreteCategory = category.slug === "beton";
 const isPmdCategory = category.slug === "beton-s-pmd";
 const pmdGroupOrder = new Map<string, number>(PMD_GROUPS.map((group, index) => [group, index]));
 
-function getProductMarkNumber(title: string): number {
-  const match = title.match(/(?:^|\s)[МM](\d+)/i);
-  return match?.[1] ? Number(match[1]) : 0;
+type CatalogFilterPanel = {
+  label: string;
+  value: string;
+  products: Product[];
+};
+
+const CONCRETE_FILTERS = [
+  { label: "На граните", slug: "granit" },
+  { label: "На гравии", slug: "graviy" },
+  { label: "Товарный", slug: "tovarnyy-beton" },
+  { label: "Гидротехнический", slug: "gidrotehnicheskiy-beton" },
+  { label: "На мелком щебне", slug: "melkiy-scheben" },
+  { label: "Схема Г", slug: "shema-g" },
+  { label: "Тощий", slug: "toschiy-beton" },
+  { label: "Другое", slug: "drugoe" }
+] as const;
+
+function getFilterValue(label: string): string {
+  return label
+    .toLowerCase()
+    .replace(/\s*\/\s*/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/[^\p{L}\p{N}.-]+/gu, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function sortPmdProducts(a: Product, b: Product): number {
@@ -42,62 +71,84 @@ function sortPmdProducts(a: Product, b: Product): number {
     return groupA - groupB;
   }
 
-  const markA = getProductMarkNumber(a.title);
-  const markB = getProductMarkNumber(b.title);
-
-  if (markA !== markB) {
-    return markB - markA;
-  }
-
-  return a.title.localeCompare(b.title, "ru");
+  return sortProductsByMarkPriceName(a, b);
 }
 
-const sortedPmdProducts = isPmdCategory
-  ? [...category.products].sort(sortPmdProducts)
-  : [];
-const hasOtherPmdProducts = sortedPmdProducts.some((product) => product.pmdGroup === "Другое");
-const pmdFilters = [
-  { label: "Все", slug: "all", query: "", products: sortedPmdProducts },
-  ...PMD_GROUPS
-    .filter((group) => group !== "Другое" || hasOtherPmdProducts)
-    .map((group) => ({
-      label: group,
-      slug: group === "Другое" ? "drugoe" : group.replace("ПМД-", ""),
-      query: group === "Другое" ? "drugoe" : group.replace("ПМД-", ""),
-      products: sortedPmdProducts.filter((product) => product.pmdGroup === group)
+function buildCatalogFilters(
+  allProducts: Product[],
+  labels: readonly string[],
+  getProductFilterLabel: (product: Product) => string | undefined,
+  valuesByLabel: Map<string, string> = new Map()
+): CatalogFilterPanel[] {
+  const filters = labels
+    .map((label) => ({
+      label,
+      value: valuesByLabel.get(label) ?? getFilterValue(label),
+      products: allProducts.filter((product) => getProductFilterLabel(product) === label)
     }))
-];
-const concreteSubcategoryDescriptions: Record<string, string> = {
-  granit: "Прочные смеси для нагруженных монолитных конструкций.",
-  graviy: "Практичный бетон для фундаментов, площадок и общестроительных работ.",
-  "tovarnyy-beton": "Популярные марки товарного бетона для типовых задач.",
-  "gidrotehnicheskiy-beton": "Смеси с повышенной стойкостью к влаге и нагрузкам.",
-  "melkiy-scheben": "Бетон для плотной укладки и работ с частым армированием.",
-  "shema-g": "Позиции по схеме Г для специальных требований к смеси.",
-  "toschiy-beton": "Экономичные смеси для подготовки оснований и подбетонки.",
-  drugoe: "Дополнительные позиции бетонного каталога."
-};
-const concreteSubcategoryVisuals: Record<string, string> = {
-  granit: "Г",
-  graviy: "Гр",
-  "tovarnyy-beton": "М",
-  "gidrotehnicheskiy-beton": "W",
-  "melkiy-scheben": "Щ",
-  "shema-g": "Г",
-  "toschiy-beton": "Т",
-  drugoe: "+"
-};
-const concreteTabs = CONCRETE_SUBCATEGORIES.map((subcategory) => ({
-  ...subcategory,
-  description: concreteSubcategoryDescriptions[subcategory.slug],
-  visual: concreteSubcategoryVisuals[subcategory.slug],
-  products: category.products.filter(
-    (product) => product.concreteSubcategorySlug === subcategory.slug
-  )
-}));
-const activeConcreteTab =
-  concreteTabs.find((subcategory) => subcategory.products.length > 0)?.slug ??
-  CONCRETE_SUBCATEGORIES[0].slug;
+    .filter((filter) => filter.products.length > 0);
+
+  if (filters.length <= 1) {
+    return [{ label: "Все", value: "", products: allProducts }];
+  }
+
+  return [{ label: "Все", value: "", products: allProducts }, ...filters];
+}
+
+function getCatalogFilterPanels(categorySlug: string, products: Product[]): CatalogFilterPanel[] {
+  if (categorySlug === "beton-s-pmd") {
+    const sortedPmdProducts = [...products].sort(sortPmdProducts);
+    const pmdValues = new Map(PMD_GROUPS.map((group) => [group, group.replace("ПМД-", "")]));
+
+    return buildCatalogFilters(
+      sortedPmdProducts,
+      PMD_GROUPS.filter((group) => group !== "Другое"),
+      (product) => product.pmdGroup,
+      pmdValues
+    );
+  }
+
+  const sortedProducts = [...products].sort(sortProductsByMarkPriceName);
+
+  if (categorySlug === "beton") {
+    const valuesByLabel = new Map(CONCRETE_FILTERS.map((filter) => [filter.label, filter.slug]));
+
+    return buildCatalogFilters(
+      sortedProducts,
+      CONCRETE_FILTERS.map((filter) => filter.label),
+      (product) =>
+        CONCRETE_FILTERS.find((filter) => filter.slug === product.concreteSubcategorySlug)?.label,
+      valuesByLabel
+    );
+  }
+
+  if (categorySlug === "fibrobeton" || categorySlug === "suhoy-beton") {
+    return buildCatalogFilters(sortedProducts, PRODUCT_MARKS, (product) =>
+      getProductMarkLabel(product.title)
+    );
+  }
+
+  if (categorySlug === "keramzitobeton") {
+    return buildCatalogFilters(sortedProducts, KERAMZIT_CLASSES, (product) =>
+      getProductClassLabel(product.title)
+    );
+  }
+
+  if (categorySlug === "rastvory-i-cps") {
+    return buildCatalogFilters(sortedProducts, CPS_PRODUCT_TYPES, getCpsProductType);
+  }
+
+  if (categorySlug === "arenda-tehniki") {
+    return buildCatalogFilters(sortedProducts, EQUIPMENT_SERVICE_TYPES, getEquipmentServiceType);
+  }
+
+  return [{ label: "Все", value: "", products: sortedProducts }];
+}
+
+const catalogFilterPanels = getCatalogFilterPanels(category.slug, category.products);
+const hasCatalogFilters = catalogFilterPanels.length > 1;
+const catalogFilterParam = isPmdCategory ? "pmd" : isConcreteCategory ? "sub" : "";
+const sortedCategoryProducts = catalogFilterPanels[0].products;
 const canonicalBase = Astro.site ?? "https://example.com";
 const crumbs = [
   { label: "Главная", href: "/" },
@@ -129,112 +180,61 @@ const schema = breadcrumbSchema([
         ))}
       </nav>
 
-      {isConcreteCategory && (
-        <nav class="subcategory-card-grid" aria-label="Подкатегории бетона">
-          {concreteTabs.map((subcategory) => (
+      <div class="catalog-products-heading">
+        <h2>Марки и цены</h2>
+        <p>
+          {isConcreteCategory
+            ? "Выберите тип бетона или оставьте заявку — менеджер рассчитает итоговую стоимость с доставкой."
+            : isPmdCategory
+              ? "Выберите температурную группу ПМД или оставьте заявку — менеджер подберет бетон под условия объекта."
+              : "Выберите позицию или оставьте заявку — менеджер рассчитает итоговую стоимость с доставкой."}
+        </p>
+      </div>
+
+      {hasCatalogFilters && (
+        <nav
+          class="catalog-filter"
+          aria-label="Фильтр товаров"
+          data-catalog-filter
+          data-filter-param={catalogFilterParam}
+        >
+          {catalogFilterPanels.map((filter) => (
             <button
-              class={`subcategory-card ${subcategory.slug === activeConcreteTab ? "is-active" : ""}`}
+              class={`catalog-filter-chip ${filter.value === "" ? "is-active" : ""}`}
               type="button"
-              data-subcategory-tab={subcategory.slug}
-              aria-selected={subcategory.slug === activeConcreteTab ? "true" : "false"}
+              data-catalog-filter-tab={filter.value}
+              aria-selected={filter.value === "" ? "true" : "false"}
             >
-              <span class={`subcategory-icon subcategory-icon-${subcategory.slug}`} aria-hidden="true">
-                {subcategory.visual}
-              </span>
-              <span class="subcategory-card-body">
-                <strong>{subcategory.title}</strong>
-                <span>{subcategory.description}</span>
-              </span>
-              <span class="subcategory-count">{subcategory.products.length} поз.</span>
+              <span>{filter.label}</span>
+              <span>{filter.products.length}</span>
             </button>
           ))}
         </nav>
       )}
 
-      {isConcreteCategory ? (
-        <div class="subcategory-panels">
-          {concreteTabs.map((subcategory) => (
+      {hasCatalogFilters ? (
+        <div class="catalog-filter-panels">
+          {catalogFilterPanels.map((filter) => (
             <section
-              class="subcategory-panel"
-              data-subcategory-panel={subcategory.slug}
-              hidden={subcategory.slug !== activeConcreteTab}
+              class="catalog-filter-panel"
+              data-catalog-filter-panel={filter.value}
+              hidden={filter.value !== ""}
             >
-              {subcategory.products.length > 0 ? (
-                <>
-                  <div class="catalog-products-heading">
-                    <h2>Марки и цены: {subcategory.title}</h2>
-                    <p>Выберите позицию или оставьте заявку — менеджер рассчитает итоговую стоимость с доставкой.</p>
-                  </div>
-                  <div class="grid grid-3 product-grid">
-                    {subcategory.products.map((product) => <ProductCard product={product} />)}
-                  </div>
-                </>
-              ) : (
-                <div class="catalog-empty">
-                  <h2>Товары этой подкатегории скоро появятся</h2>
-                  <p>Оставьте заявку, и мы уточним доступные позиции и стоимость доставки.</p>
-                </div>
-              )}
+              <div class="grid grid-3 product-grid">
+                {filter.products.map((product) => <ProductCard product={product} />)}
+              </div>
             </section>
           ))}
         </div>
-      ) : isPmdCategory ? (
-        <>
-          <div class="catalog-products-heading">
-            <h2>Марки и цены</h2>
-            <p>Выберите температурную группу ПМД или оставьте заявку — менеджер подберет бетон под условия объекта.</p>
-          </div>
-          <nav class="pmd-filter" aria-label="Фильтр по группе ПМД">
-            {pmdFilters.map((filter) => (
-              <button
-                class={`pmd-filter-chip ${filter.slug === "all" ? "is-active" : ""}`}
-                type="button"
-                data-pmd-tab={filter.query}
-                aria-selected={filter.slug === "all" ? "true" : "false"}
-              >
-                <span>{filter.label}</span>
-                <span>{filter.products.length}</span>
-              </button>
-            ))}
-          </nav>
-          <div class="pmd-panels">
-            {pmdFilters.map((filter) => (
-              <section
-                class="pmd-panel"
-                data-pmd-panel={filter.query}
-                hidden={filter.slug !== "all"}
-              >
-                {filter.products.length > 0 ? (
-                  <div class="grid grid-3 product-grid">
-                    {filter.products.map((product) => <ProductCard product={product} />)}
-                  </div>
-                ) : (
-                  <div class="catalog-empty">
-                    <h2>Товары этой группы скоро появятся</h2>
-                    <p>Оставьте заявку, и мы уточним доступные позиции и стоимость доставки.</p>
-                  </div>
-                )}
-              </section>
-            ))}
-          </div>
-        </>
+      ) : sortedCategoryProducts.length > 0 ? (
+        <div class="grid grid-3 product-grid">
+          {sortedCategoryProducts.map((product) => <ProductCard product={product} />)}
+        </div>
       ) : (
-        <>
-          <div class="catalog-products-heading">
-            <h2>Марки и цены</h2>
-            <p>Выберите позицию или оставьте заявку — менеджер рассчитает итоговую стоимость с доставкой.</p>
-          </div>
-          <div class="grid grid-3 product-grid">
-            {category.products.length > 0 ? (
-              category.products.map((product) => <ProductCard product={product} />)
-            ) : (
-            <div class="catalog-empty">
-              <h2>Товары этой категории скоро появятся</h2>
-              <p>Оставьте заявку, и мы уточним доступные позиции и стоимость доставки.</p>
-            </div>
-            )}
-          </div>
-        </>
+        <div class="catalog-empty">
+          <h2>Товары этой категории скоро появятся</h2>
+          <p>Оставьте заявку, и мы уточним доступные позиции и стоимость доставки.</p>
+        </div>
       )}
     </div>
   </section>
@@ -250,82 +250,48 @@ const schema = breadcrumbSchema([
     </div>
   </section>
 
-  {isConcreteCategory && (
+  {hasCatalogFilters && (
     <script is:inline>
-      const tabButtons = document.querySelectorAll("[data-subcategory-tab]");
-      const tabPanels = document.querySelectorAll("[data-subcategory-panel]");
+      const catalogFilterRoot = document.querySelector("[data-catalog-filter]");
+      const catalogFilterButtons = document.querySelectorAll("[data-catalog-filter-tab]");
+      const catalogFilterPanels = document.querySelectorAll("[data-catalog-filter-panel]");
+      const catalogFilterParam = catalogFilterRoot?.getAttribute("data-filter-param") ?? "";
 
-      function activateConcreteSubcategory(slug) {
-        if (!slug) {
-          return;
-        }
+      function activateCatalogFilter(value) {
+        const normalizedValue = value ?? "";
 
-        tabButtons.forEach((button) => {
-          const isActive = button.getAttribute("data-subcategory-tab") === slug;
+        catalogFilterButtons.forEach((button) => {
+          const isActive = button.getAttribute("data-catalog-filter-tab") === normalizedValue;
           button.classList.toggle("is-active", isActive);
           button.setAttribute("aria-selected", isActive ? "true" : "false");
         });
 
-        tabPanels.forEach((panel) => {
-          panel.hidden = panel.getAttribute("data-subcategory-panel") !== slug;
+        catalogFilterPanels.forEach((panel) => {
+          panel.hidden = panel.getAttribute("data-catalog-filter-panel") !== normalizedValue;
         });
 
-        const url = new URL(window.location.href);
-        url.searchParams.set("sub", slug);
-        window.history.replaceState(null, "", url);
-      }
-
-      const initialSubcategory = new URLSearchParams(window.location.search).get("sub");
-      if (
-        initialSubcategory &&
-        document.querySelector(`[data-subcategory-panel="${initialSubcategory}"]`)
-      ) {
-        activateConcreteSubcategory(initialSubcategory);
-      }
-
-      tabButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          activateConcreteSubcategory(button.getAttribute("data-subcategory-tab"));
-        });
-      });
-    </script>
-  )}
-
-  {isPmdCategory && (
-    <script is:inline>
-      const pmdFilterButtons = document.querySelectorAll("[data-pmd-tab]");
-      const pmdPanels = document.querySelectorAll("[data-pmd-panel]");
-
-      function activatePmdFilter(group) {
-        const normalizedGroup = group ?? "";
-
-        pmdFilterButtons.forEach((button) => {
-          const isActive = button.getAttribute("data-pmd-tab") === normalizedGroup;
-          button.classList.toggle("is-active", isActive);
-          button.setAttribute("aria-selected", isActive ? "true" : "false");
-        });
-
-        pmdPanels.forEach((panel) => {
-          panel.hidden = panel.getAttribute("data-pmd-panel") !== normalizedGroup;
-        });
-
-        const url = new URL(window.location.href);
-        if (normalizedGroup) {
-          url.searchParams.set("pmd", normalizedGroup);
-        } else {
-          url.searchParams.delete("pmd");
+        if (catalogFilterParam) {
+          const url = new URL(window.location.href);
+          if (normalizedValue) {
+            url.searchParams.set(catalogFilterParam, normalizedValue);
+          } else {
+            url.searchParams.delete(catalogFilterParam);
+          }
+          window.history.replaceState(null, "", url);
         }
-        window.history.replaceState(null, "", url);
       }
 
-      const initialPmdGroup = new URLSearchParams(window.location.search).get("pmd") ?? "";
-      if (document.querySelector(`[data-pmd-panel="${initialPmdGroup}"]`)) {
-        activatePmdFilter(initialPmdGroup);
+      const initialCatalogFilter = catalogFilterParam
+        ? new URLSearchParams(window.location.search).get(catalogFilterParam) ?? ""
+        : "";
+
+      if (document.querySelector(`[data-catalog-filter-panel="${initialCatalogFilter}"]`)) {
+        activateCatalogFilter(initialCatalogFilter);
       }
 
-      pmdFilterButtons.forEach((button) => {
+      catalogFilterButtons.forEach((button) => {
         button.addEventListener("click", () => {
-          activatePmdFilter(button.getAttribute("data-pmd-tab"));
+          activateCatalogFilter(button.getAttribute("data-catalog-filter-tab"));
         });
       });
     </script>
