@@ -1,5 +1,14 @@
 ---
 import { navItems, site } from "@lib/site";
+
+const currentPath = Astro.url.pathname;
+const isActiveNavItem = (href: string) => {
+  if (href === "/") {
+    return currentPath === "/";
+  }
+
+  return currentPath === href || currentPath.startsWith(href);
+};
 ---
 
 <header class="site-header">
@@ -20,7 +29,11 @@ import { navItems, site } from "@lib/site";
     </button>
 
     <nav id="site-menu" class="site-nav" aria-label="Основная навигация">
-      {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
+      {navItems.map((item) => (
+        <a href={item.href} class:list={{ "is-active": isActiveNavItem(item.href) }} aria-current={isActiveNavItem(item.href) ? "page" : undefined}>
+          {item.label}
+        </a>
+      ))}
       <div class="mobile-nav-actions">
         <a class="phone-link" href="tel:+74950329998">
           <span>Отдел продаж</span>

@@ -1,45 +1,611 @@
 ---
-import ContactButtons from "@components/ContactButtons.astro";
-import RequestForm from "@components/RequestForm.astro";
+import RequestSection from "@components/RequestSection.astro";
 import YandexMap from "@components/YandexMap.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { site } from "@lib/site";
+
+const helpCards = [
+  {
+    title: "Заказ бетона и растворов",
+    text: "Подбор марки, уточнение цены и оформление поставки."
+  },
+  {
+    title: "Доставка и спецтехника",
+    text: "Расчёт доставки, количества машин и подбор автобетононасоса."
+  },
+  {
+    title: "Вопрос по действующему заказу",
+    text: "Уточнение времени поставки, адреса и условий подъезда."
+  }
+];
+
+const messengers = [
+  {
+    label: "WhatsApp",
+    href: site.whatsappHref,
+    icon: "/icons/whatsapp.svg",
+    ariaLabel: "Написать в WhatsApp"
+  },
+  {
+    label: "MAX",
+    href: site.maxHref,
+    icon: "/icons/max.svg",
+    ariaLabel: "Написать в MAX"
+  },
+  {
+    label: "Telegram",
+    href: site.telegramHref,
+    icon: "/icons/telegram.svg",
+    ariaLabel: "Написать в Telegram"
+  }
+];
 ---
 
 <BaseLayout
   title="Контакты"
   description="Контакты ЛИДЕР БЕТОН ГРУПП: телефоны, WhatsApp, MAX, карта завода и форма заявки."
 >
-  <section class="section-tight">
+  <section class="section-tight contacts-hero">
     <div class="container">
-      <div class="section-title">
-        <p class="eyebrow">Контакты</p>
-        <h1>Связаться с {site.name}</h1>
-        <p>{site.region}</p>
+      <div class="section-title contacts-title">
+        <p class="eyebrow">КОНТАКТЫ</p>
+        <h1>Связаться с «ЛИДЕР БЕТОН ГРУПП»</h1>
+        <p>Свяжитесь с отделом продаж, чтобы уточнить стоимость бетона, доставки и аренды техники. Работаем с объектами в Москве и Московской области.</p>
       </div>
-      <div class="grid grid-3">
-        <article class="info-card">
-          <h3>Телефоны</h3>
-          <p><a href="tel:+74950329998">{site.phonePrimary}</a></p>
-          <p><a href="tel:+74950326040">{site.phoneSecondary}</a></p>
+
+      <div class="contacts-hero-grid">
+        <article class="contacts-contact-card contacts-sales-panel">
+          <p class="contacts-card-label">ОТДЕЛ ПРОДАЖ</p>
+          <h2>Позвонить в отдел продаж</h2>
+          <p class="contacts-sales-note">Расчёт стоимости, подбор марки и согласование поставки.</p>
+          <div class="contacts-phone-list">
+            <a href={site.phonePrimaryHref}>{site.phonePrimary}</a>
+            <a href={site.phoneSecondaryHref}>{site.phoneSecondary}</a>
+          </div>
+          <a class="button button-accent" href={site.phonePrimaryHref}>Позвонить</a>
         </article>
-        <article class="info-card">
-          <h3>Мессенджеры</h3>
-          <p><a href={site.whatsappHref}>WhatsApp: {site.whatsapp}</a></p>
-          <p><a href={site.maxHref} target="_blank" rel="noopener noreferrer">MAX: {site.whatsapp}</a></p>
-        </article>
-        <article class="info-card">
-          <h3>Быстрые действия</h3>
-          <ContactButtons />
+
+        <article class="contacts-contact-card contacts-messenger-card">
+          <h2>Написать менеджеру</h2>
+          <p>Отправьте марку, объём и адрес объекта — менеджер подготовит расчёт.</p>
+          <div class="contacts-message-hint">
+            <strong>Для расчёта укажите:</strong>
+            <ul>
+              <li>марку бетона или тип работ</li>
+              <li>объём заказа</li>
+              <li>адрес и желаемое время доставки</li>
+            </ul>
+          </div>
+          <p class="contacts-messenger-label">МЕССЕНДЖЕРЫ</p>
+          <div class="contacts-messenger-list">
+            {messengers.map((messenger) => (
+              <a
+                class="contacts-messenger-button"
+                href={messenger.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={messenger.ariaLabel}
+              >
+                <img src={messenger.icon} alt="" aria-hidden="true" />
+                <span>{messenger.label}</span>
+              </a>
+            ))}
+          </div>
         </article>
       </div>
     </div>
   </section>
 
   <section class="section section-white">
-    <div class="container grid grid-2">
-      <YandexMap />
-      <RequestForm />
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">ПОМОЩЬ</p>
+        <h2>По каким вопросам можно обратиться</h2>
+      </div>
+      <div class="grid grid-3 contacts-help-grid">
+        {helpCards.map((card, index) => (
+          <article class="info-card contacts-help-card">
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <h3>{card.title}</h3>
+            <p>{card.text}</p>
+          </article>
+        ))}
+      </div>
     </div>
   </section>
+
+  <section class="section contacts-map-section">
+    <div class="container contacts-map-grid">
+      <article class="contacts-plant-card">
+        <div class="section-title">
+          <p class="eyebrow">ЗАВОД</p>
+          <h2>Завод в Апрелевке</h2>
+          <p>Производственная площадка и точка отгрузки бетона и растворов.</p>
+        </div>
+        <ul class="contacts-plant-list">
+          <li><span>Адрес</span><strong>Апрелевка, Сентябрьская ул., 12</strong></li>
+          <li><span>Зона доставки</span><strong>Москва и Московская область</strong></li>
+          <li><span>Расчёт доставки</span><strong>индивидуально по адресу и объёму</strong></li>
+        </ul>
+        <div class="contacts-map-actions">
+          <a class="button contacts-map-primary" href="#request">Получить расчёт доставки</a>
+          <a class="button contacts-map-secondary" href={site.yandexMapHref} target="_blank" rel="noopener noreferrer">
+            Построить маршрут
+          </a>
+        </div>
+      </article>
+
+      <div class="contacts-map-card">
+        <YandexMap />
+      </div>
+    </div>
+  </section>
+
+  <section class="section contacts-form-intro-section">
+    <div class="container contacts-form-intro">
+      <h2>Не нашли нужную информацию?</h2>
+      <p>Оставьте данные для расчёта — менеджер свяжется с вами удобным способом.</p>
+    </div>
+  </section>
+
+  <RequestSection />
 </BaseLayout>
+
+<style>
+  .contacts-hero {
+    padding: 46px 0 40px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.86) 0%, rgba(238, 244, 250, 0.98) 58%, rgba(230, 238, 247, 0.94) 100%),
+      #eef4fa;
+  }
+
+  .contacts-hero-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    align-items: stretch;
+  }
+
+  .contacts-title {
+    max-width: 1100px;
+    margin-bottom: 24px;
+  }
+
+  .contacts-title h1 {
+    font-size: clamp(44px, 4vw, 64px);
+    line-height: 1.04;
+  }
+
+  .contacts-title p {
+    max-width: 850px;
+    line-height: 1.55;
+  }
+
+  .contacts-contact-card {
+    position: relative;
+    display: flex;
+    min-height: 300px;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 13px;
+    overflow: hidden;
+    padding: clamp(24px, 2.7vw, 30px);
+    border: 1px solid rgba(15, 49, 92, 0.08);
+    border-radius: 20px;
+    background: var(--color-white);
+    box-shadow: 0 22px 52px rgba(15, 49, 92, 0.12);
+  }
+
+  .contacts-contact-card::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    border-radius: 20px 20px 0 0;
+    background: var(--color-accent);
+    content: "";
+  }
+
+  .contacts-sales-panel {
+    align-items: flex-start;
+  }
+
+  .contacts-card-label {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+  }
+
+  .contacts-sales-note {
+    max-width: 420px;
+    margin: 0;
+    color: rgba(15, 49, 92, 0.72);
+    line-height: 1.45;
+  }
+
+  .contacts-phone-list {
+    display: grid;
+    gap: 6px;
+  }
+
+  .contacts-phone-list a {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    color: var(--color-primary);
+    font-weight: 900;
+    line-height: 1.05;
+  }
+
+  .contacts-phone-list a:first-child {
+    font-size: clamp(26px, 3vw, 38px);
+  }
+
+  .contacts-phone-list a:last-child {
+    color: rgba(15, 49, 92, 0.86);
+    font-size: clamp(20px, 2.25vw, 26px);
+  }
+
+  .contacts-sales-panel .button {
+    justify-self: start;
+    margin-top: 2px;
+    min-width: 180px;
+    color: var(--color-primary);
+  }
+
+  .contacts-sales-panel h2,
+  .contacts-messenger-card h2,
+  .contacts-plant-card h2,
+  .contacts-form-intro h2 {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: clamp(26px, 3vw, 38px);
+    line-height: 1.12;
+  }
+
+  .contacts-messenger-card p {
+    max-width: 560px;
+    margin: 0;
+    color: var(--color-muted);
+    line-height: 1.5;
+  }
+
+  .contacts-message-hint {
+    display: grid;
+    gap: 9px;
+    padding: 14px 16px;
+    border: 1px solid rgba(15, 49, 92, 0.08);
+    border-radius: 14px;
+    color: var(--color-primary);
+    background: #f3f7fb;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+
+  .contacts-message-hint strong {
+    font-size: 15px;
+    line-height: 1.25;
+  }
+
+  .contacts-message-hint ul {
+    display: grid;
+    gap: 7px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contacts-message-hint li {
+    position: relative;
+    padding-left: 18px;
+    color: #0f315c;
+    font-size: 14.5px;
+    font-weight: 750;
+    line-height: 1.35;
+  }
+
+  .contacts-message-hint li::before {
+    content: "";
+    position: absolute;
+    top: 0.52em;
+    left: 0;
+    width: 8px;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--color-accent);
+  }
+
+  .contacts-messenger-label {
+    margin: 2px 0 -4px;
+    color: #6a7d91;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+
+  .contacts-messenger-list {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .contacts-messenger-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 70px;
+    padding: 17px 14px;
+    border: 1px solid rgba(15, 49, 92, 0.14);
+    border-radius: var(--radius);
+    color: var(--color-primary);
+    background: #ffffff;
+    font-weight: 850;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  }
+
+  .contacts-messenger-button img {
+    display: block;
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+  }
+
+  .contacts-messenger-button:hover,
+  .contacts-messenger-button:focus-visible {
+    border-color: rgba(247, 181, 0, 0.58);
+    background: #fffdf6;
+    box-shadow: 0 10px 22px rgba(15, 49, 92, 0.1);
+    transform: translateY(-1px);
+  }
+
+  @media (min-width: 1181px) {
+    .contacts-title h1 {
+      white-space: nowrap;
+    }
+  }
+
+  .contacts-help-grid {
+    align-items: stretch;
+  }
+
+  .contacts-help-card {
+    position: relative;
+    min-height: 100%;
+    overflow: hidden;
+    padding: 20px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+
+  .contacts-help-card span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 28px;
+    margin-bottom: 14px;
+    border-radius: 8px;
+    color: var(--color-primary);
+    background: rgba(247, 181, 0, 0.14);
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .contacts-help-card h3 {
+    margin-bottom: 8px;
+  }
+
+  .contacts-help-card p {
+    margin: 0;
+    color: var(--color-muted);
+    line-height: 1.55;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .contacts-help-card:hover,
+  .contacts-help-card:focus-within {
+    border-color: rgba(15, 49, 92, 0.16);
+    box-shadow: 0 12px 26px rgba(15, 49, 92, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .contacts-map-section {
+    background: #f3f6fa;
+  }
+
+  .contacts-map-grid {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.78fr) minmax(0, 1.22fr);
+    gap: 26px;
+    align-items: stretch;
+  }
+
+  .contacts-map-card {
+    border: 1px solid rgba(15, 49, 92, 0.1);
+    border-radius: 20px;
+    background: var(--color-white);
+    box-shadow: 0 18px 42px rgba(15, 49, 92, 0.11);
+    align-self: stretch;
+  }
+
+  .contacts-plant-card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 100%;
+    padding: clamp(26px, 4vw, 36px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 42%),
+      #0f315c;
+    box-shadow: 0 18px 42px rgba(15, 49, 92, 0.18);
+  }
+
+  .contacts-plant-card .section-title {
+    margin-bottom: 0;
+  }
+
+  .contacts-plant-card .eyebrow {
+    color: var(--color-accent);
+  }
+
+  .contacts-plant-card h2 {
+    color: var(--color-white);
+  }
+
+  .contacts-plant-card .section-title p {
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.55;
+  }
+
+  .contacts-plant-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contacts-plant-list li {
+    display: grid;
+    gap: 3px;
+    padding: 13px 15px 13px 17px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .contacts-plant-list span {
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .contacts-plant-list strong {
+    color: var(--color-white);
+    line-height: 1.35;
+  }
+
+  .contacts-map-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: auto;
+  }
+
+  .contacts-map-actions .button {
+    width: 100%;
+    min-height: 50px;
+    padding-inline: 12px;
+    font-size: 15px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .contacts-map-primary {
+    border-color: var(--color-accent);
+    color: var(--color-primary);
+    background: var(--color-accent);
+  }
+
+  .contacts-map-primary:hover,
+  .contacts-map-primary:focus-visible {
+    border-color: #ffd34a;
+    color: var(--color-primary);
+    background: #ffd34a;
+  }
+
+  .contacts-map-secondary {
+    border-color: rgba(255, 255, 255, 0.56);
+    color: var(--color-white);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .contacts-map-secondary:hover,
+  .contacts-map-secondary:focus-visible {
+    border-color: var(--color-white);
+    color: var(--color-white);
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .contacts-map-card {
+    display: grid;
+    overflow: hidden;
+    padding: 12px;
+  }
+
+  .contacts-map-card .map-block {
+    grid-template-rows: auto 1fr auto;
+    height: 100%;
+    min-height: 100%;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .contacts-map-card .map-block iframe {
+    height: 100%;
+    min-height: 480px;
+  }
+
+  .contacts-form-intro-section {
+    padding-top: 30px;
+    padding-bottom: 10px;
+    background: var(--color-white);
+  }
+
+  .contacts-form-intro-section + :global(.request-section) {
+    padding-top: 46px;
+  }
+
+  .contacts-form-intro {
+    max-width: 780px;
+  }
+
+  .contacts-form-intro h2 {
+    margin-bottom: 10px;
+    font-size: clamp(23px, 2.5vw, 33px);
+  }
+
+  .contacts-form-intro p {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 18px;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 980px) {
+    .contacts-hero-grid,
+    .contacts-map-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .contacts-contact-card {
+      min-height: auto;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .contacts-contact-card,
+    .contacts-plant-card {
+      padding: 22px;
+    }
+
+    .contacts-messenger-list,
+    .contacts-map-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .contacts-map-card .map-block iframe {
+      min-height: 320px;
+    }
+  }
+</style>

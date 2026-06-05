@@ -16,14 +16,14 @@ type Props = {
 const { categories, variant = "default" } = Astro.props;
 
 const categoryIcons: Record<string, string> = {
-  beton: "M10 20 24 12l14 8-14 8-14-8Zm0 0v14l14 8V28L10 20Zm28 0v14l-14 8V28l14-8Z",
-  "beton-s-pmd": "M24 8c6 8 10 14 10 20a10 10 0 0 1-20 0c0-6 4-12 10-20Zm-8 28h16M18 24h12",
-  fibrobeton: "M10 32c9-14 19-14 28 0M10 24c9-10 19-10 28 0M10 16c9 8 19 8 28 0",
-  keramzitobeton: "M15 18a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm19 4a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM20 40a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm17-2a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z",
-  "suhoy-beton": "M16 10h16l4 8v22H12V18l4-8Zm-4 8h24M18 27h12M18 34h8",
-  "rastvory-i-cps": "M13 18h22l-3 22H16l-3-22Zm4-8h14l4 8H13l4-8Zm22 6 5-5M36 13l5 5",
-  "arenda-tehniki": "M8 30h5l5-12h13l6 8h3v8h-4M18 34h12M13 34a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm23 0a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
-  drugoe: "M24 10v28M10 24h28"
+  beton: "/icons/categories/concrete.svg",
+  "beton-s-pmd": "/icons/categories/antifreeze.svg",
+  fibrobeton: "/icons/categories/fiber-concrete.svg",
+  keramzitobeton: "/icons/categories/claydite.svg",
+  "suhoy-beton": "/icons/categories/dry-concrete.svg",
+  "rastvory-i-cps": "/icons/categories/mortars.svg",
+  "arenda-tehniki": "/icons/categories/equipment.svg",
+  drugoe: "/icons/categories/other.svg"
 };
 
 function getMinPrice(products: Product[]): number | undefined {
@@ -152,25 +152,17 @@ function getRangeLabel(category: CategoryPage): string {
 <div class={`catalog-category-grid catalog-category-grid-${variant}`}>
   {categories.map((category) => (
     <a class="catalog-category-card" href={`/catalog/${category.slug}/`}>
-      {variant === "featured" ? (
-        <span class="catalog-category-top">
-          <span class={`catalog-category-icon catalog-category-icon-${category.slug}`} aria-hidden="true">
-            <svg viewBox="0 0 48 48" focusable="false">
-              <path d={categoryIcons[category.slug] ?? categoryIcons.drugoe}></path>
-            </svg>
-          </span>
-          <span class="catalog-category-count">{category.products.length} поз.</span>
+      <span class="catalog-category-top">
+        <span class={`catalog-category-icon catalog-category-icon-${category.slug}`}>
+          <img
+            src={categoryIcons[category.slug] ?? categoryIcons.drugoe}
+            alt={`Категория ${category.title}`}
+            loading="lazy"
+            decoding="async"
+          />
         </span>
-      ) : (
-        <>
-          <span class={`catalog-category-icon catalog-category-icon-${category.slug}`} aria-hidden="true">
-            <svg viewBox="0 0 48 48" focusable="false">
-              <path d={categoryIcons[category.slug] ?? categoryIcons.drugoe}></path>
-            </svg>
-          </span>
-          <span class="catalog-category-count">{category.products.length} поз.</span>
-        </>
-      )}
+        <span class="catalog-category-count">{category.products.length} поз.</span>
+      </span>
       <div class="catalog-category-body">
         <h2>{category.title}</h2>
         <p>{category.description}</p>
@@ -184,10 +176,15 @@ function getRangeLabel(category: CategoryPage): string {
               <strong>{getPriceFrom(category)}</strong>
             </span>
           </span>
-          <span class="button button-small button-accent">Смотреть цены</span>
+          <span class="catalog-category-link">Смотреть цены →</span>
         </span>
       ) : (
-        <span class="button button-small button-accent">Смотреть цены</span>
+        <span class="catalog-category-footer">
+          <span class="catalog-category-meta">
+            <span class="catalog-category-range">{getRangeLabel(category)}</span>
+          </span>
+          <span class="catalog-category-link">Смотреть цены →</span>
+        </span>
       )}
     </a>
   ))}

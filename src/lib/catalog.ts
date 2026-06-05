@@ -391,13 +391,89 @@ export function getProduct(categorySlug: string, productSlug: string): Product |
 }
 
 export function getRelatedProducts(product: Product, limit = 3): Product[] {
-  return products
-    .filter((item) => item.categorySlug === product.categorySlug && item.slug !== product.slug)
-    .slice(0, limit);
+  const selected: Product[] = [];
+  const currentPath = `${product.categorySlug}/${product.slug}`;
+  const seenPaths = new Set([currentPath]);
+  const seenTitles = new Set([product.title]);
+  const append = (items: Product[]) => {
+    for (const item of items) {
+      const itemPath = `${item.categorySlug}/${item.slug}`;
+      if (seenPaths.has(itemPath) || seenTitles.has(item.title)) {
+        continue;
+      }
+
+      seenPaths.add(itemPath);
+      seenTitles.add(item.title);
+      selected.push(item);
+
+      if (selected.length >= limit) {
+        return;
+      }
+    }
+  };
+
+  if (product.concreteSubcategorySlug) {
+    append(
+      products.filter(
+        (item) =>
+          item.categorySlug === product.categorySlug &&
+          item.concreteSubcategorySlug === product.concreteSubcategorySlug
+      )
+    );
+  }
+
+  if (product.pmdGroup) {
+    append(
+      products.filter(
+        (item) => item.categorySlug === product.categorySlug && item.pmdGroup === product.pmdGroup
+      )
+    );
+  }
+
+  append(products.filter((item) => item.categorySlug === product.categorySlug));
+  append(getPopularProducts(POPULAR_PRODUCT_TITLES.length));
+
+  return selected.slice(0, limit);
 }
 
-export function getPopularProducts(limit = 8): Product[] {
-  return products.slice(0, limit);
+export const POPULAR_PRODUCT_TITLES = [
+  "Бетон на граните М300 B22,5 П4 F150 W20",
+  "Бетон на граните М350 B25 П4 F200 W20",
+  "Аренда автобетононасоса (АБН) 26-32м.",
+  "Бетон с ПМД-5 М300 B22,5 F150 W6 П4",
+  "Кладочный раствор М150",
+  "Пескобетон М300"
+] as const;
+
+export function getPopularProducts(limit = 6): Product[] {
+  const selectedProducts = POPULAR_PRODUCT_TITLES.map((title) =>
+    products.find((product) => product.title === title)
+  ).filter((product): product is Product => Boolean(product));
+
+  return selectedProducts.slice(0, limit);
+}
+
+export function getConcreteDeliveryEquipmentProducts(limit = 2): Product[] {
+  const priorityKeywords = [
+    "автобетононасос",
+    "абн",
+    "миксер с насосом",
+    "бетононасос",
+    "насос"
+  ];
+
+  return products
+    .filter((product) => product.categorySlug === "arenda-tehniki")
+    .map((product) => {
+      const title = product.title.toLowerCase();
+      const priority = priorityKeywords.findIndex((keyword) => title.includes(keyword));
+
+      return { product, priority };
+    })
+    .filter(({ priority }) => priority >= 0)
+    .sort((a, b) => a.priority - b.priority)
+    .map(({ product }) => product)
+    .slice(0, limit);
 }
 
 export function getProductMarkNumber(title: string): number {

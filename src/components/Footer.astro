@@ -22,10 +22,23 @@ import { navItems, site } from "@lib/site";
 
     <div class="footer-contacts">
       <h3>Связаться</h3>
-      <a href="tel:+74950329998">{site.phonePrimary}</a>
-      <a href="tel:+74950326040">{site.phoneSecondary}</a>
-      <a href={site.whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp: {site.whatsapp}</a>
-      <a href={site.maxHref} target="_blank" rel="noopener noreferrer">MAX: {site.whatsapp}</a>
+      <a href={site.phonePrimaryHref}>{site.phonePrimary}</a>
+      <a href={site.phoneSecondaryHref}>{site.phoneSecondary}</a>
+      <p class="footer-messenger-title">Мессенджеры:</p>
+      <div class="footer-messenger-links">
+        <a href={site.whatsappHref} target="_blank" rel="noopener noreferrer" aria-label="Написать в WhatsApp">
+          <img src="/icons/whatsapp.svg" alt="" aria-hidden="true" />
+          <span>WhatsApp</span>
+        </a>
+        <a href={site.maxHref} target="_blank" rel="noopener noreferrer" aria-label="Написать в MAX">
+          <img src="/icons/max.svg" alt="" aria-hidden="true" />
+          <span>MAX</span>
+        </a>
+        <a href={site.telegramHref} target="_blank" rel="noopener noreferrer" aria-label="Написать в Telegram">
+          <img src="/icons/telegram.svg" alt="" aria-hidden="true" />
+          <span>Telegram</span>
+        </a>
+      </div>
       <a class="button button-accent footer-button" href="/kontakty/#request">Заказать бетон</a>
     </div>
   </div>

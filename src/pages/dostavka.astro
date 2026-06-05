@@ -1,36 +1,872 @@
 ---
-import ContactButtons from "@components/ContactButtons.astro";
-import RequestForm from "@components/RequestForm.astro";
+import RequestSection from "@components/RequestSection.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { site } from "@lib/site";
 
 const title = "Доставка бетона";
 const description =
   "Доставка бетона по Москве и Московской области. Стоимость рассчитывается индивидуально по адресу, объему, марке и условиям подъезда.";
+
+const heroPoints = [
+  "Расчёт по адресу и объёму",
+  "Согласование времени подачи",
+  "Подбор техники под объект"
+];
+
+const heroBenefits = [
+  {
+    title: "Москва и Московская область",
+    text: "Работаем с объектами по Москве и области."
+  },
+  {
+    title: "Доставка миксерами",
+    text: "Организуем подачу смеси на объект."
+  },
+  {
+    title: "Подача автобетононасосом",
+    text: "Подбираем технику при необходимости."
+  },
+  {
+    title: "Расчёт индивидуально",
+    text: "Учитываем адрес, объём и условия объекта."
+  }
+];
+
+const costFactors = [
+  {
+    title: "Адрес и удалённость",
+    text: "Расстояние до объекта влияет на маршрут, время в пути и итоговый расчёт."
+  },
+  {
+    title: "Объём и количество машин",
+    text: "Стоимость зависит от объёма заказа и количества рейсов/миксеров."
+  },
+  {
+    title: "Условия подъезда",
+    text: "Важно заранее учитывать подъезд к объекту, место разгрузки и ограничения на площадке."
+  },
+  {
+    title: "Время подачи",
+    text: "Дата и время поставки согласуются с менеджером под график объекта."
+  },
+  {
+    title: "Подача смеси",
+    text: "Если нужна подача на расстояние или высоту, может потребоваться автобетононасос."
+  },
+  {
+    title: "Замыв и условия объекта",
+    text: "Наличие места для замыва и дополнительные условия объекта уточняются при расчёте."
+  }
+];
+
+const requestItems = [
+  "адрес объекта",
+  "марка бетона или тип смеси",
+  "объём заказа",
+  "желаемая дата и время поставки",
+  "условия подъезда и разгрузки",
+  "нужна ли подача автобетононасосом"
+];
+
+const deliveryTags = [
+  "Москва и Московская область",
+  "Расчёт индивидуально",
+  "Подача автобетононасосом"
+];
+
+const deliveryCtaItems = [
+  "Расчёт по адресу и объёму",
+  "Согласование времени подачи",
+  "Подбор автобетононасоса при необходимости"
+];
+
+const deliverySteps = [
+  {
+    title: "Оставляете заявку",
+    text: "Указываете адрес, марку и объём."
+  },
+  {
+    title: "Уточняем условия",
+    text: "Проверяем подъезд, время и особенности объекта."
+  },
+  {
+    title: "Рассчитываем доставку",
+    text: "Считаем количество машин и итоговую стоимость."
+  },
+  {
+    title: "Согласуем поставку",
+    text: "Подтверждаем время и отправку машины."
+  }
+];
 ---
 
 <BaseLayout title={title} description={description}>
-  <section class="section-tight">
-    <div class="container request-panel">
-      <div>
-        <div class="section-title">
-          <p class="eyebrow">Доставка</p>
-          <h1>{title}</h1>
-          <p>{site.deliveryText}</p>
+  <section class="delivery-hero">
+    <div class="container container-wide delivery-hero-shell">
+      <div class="delivery-hero-grid">
+        <div class="delivery-hero-copy">
+          <p class="eyebrow">ДОСТАВКА</p>
+          <h1>Доставка бетона по Москве и Московской области</h1>
+          <p class="delivery-hero-lead">Рассчитаем количество машин, согласуем время подачи и подберём технику под условия объекта.</p>
+          <p class="delivery-hero-text">
+            Стоимость доставки рассчитывается индивидуально и зависит от адреса объекта, объёма заказа,
+            количества машин, марки бетона, времени подачи и условий подъезда. Менеджер уточнит детали
+            и подготовит расчёт под конкретный объект.
+          </p>
+          <ul class="delivery-hero-points">
+            {heroPoints.map((point) => <li>{point}</li>)}
+          </ul>
+          <div class="delivery-hero-actions">
+            <a class="button button-accent" href="#request">Получить расчёт доставки</a>
+            <a class="button button-outline" href="#request">Связаться с менеджером</a>
+          </div>
         </div>
-        <div class="grid">
-          <article class="info-card">
-            <h3>Что нужно для расчета</h3>
-            <p>Адрес объекта, объем заказа, марка бетона, желаемое время подачи и условия подъезда.</p>
-          </article>
-          <article class="info-card">
-            <h3>Без онлайн-калькулятора</h3>
-            <p>Калькулятор доставки в первой версии не используется, чтобы не показывать неподтвержденные расчеты.</p>
-          </article>
-        </div>
-        <ContactButtons />
+
+        <figure class="delivery-hero-media">
+          <img
+            src="/images/delivery-fleet.webp"
+            alt="Автобетоносмесители для доставки бетона на объект"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>
+            <strong>Доставка миксерами на объект</strong>
+            <span>Москва и Московская область</span>
+          </figcaption>
+        </figure>
       </div>
-      <RequestForm />
+
+      <ul class="delivery-hero-benefits" aria-label="Преимущества доставки">
+        {heroBenefits.map((item) => (
+          <li>
+            <strong>{item.title}</strong>
+            <span>{item.text}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
+
+  <section class="section section-white">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">РАСЧЁТ</p>
+        <h2>Что влияет на стоимость доставки</h2>
+      </div>
+      <div class="grid grid-3 delivery-card-grid">
+        {costFactors.map((item, index) => (
+          <article class="info-card delivery-card">
+            <span class="delivery-card-number">{String(index + 1).padStart(2, "0")}</span>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section delivery-note-section">
+    <div class="container">
+      <article class="delivery-note">
+        <div>
+          <h2>Получите расчёт доставки под ваш объект</h2>
+          <p>
+            Сообщите адрес, объём, марку смеси и условия подъезда — менеджер рассчитает
+            количество машин, доставку и при необходимости подберёт технику для подачи бетона.
+          </p>
+          <a class="button button-accent delivery-note-button" href="#request">Рассчитать доставку</a>
+        </div>
+        <ul class="delivery-note-list">
+          {deliveryCtaItems.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2 delivery-request-grid">
+      <figure class="delivery-request-media">
+        <img
+          src="/images/delivery-mixers.webp"
+          alt="Миксеры для доставки бетонной смеси"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption class="delivery-media-tags">
+          {deliveryTags.map((tag) => <span>{tag}</span>)}
+        </figcaption>
+      </figure>
+
+      <article class="info-card delivery-request-card">
+        <p class="eyebrow">ЗАЯВКА</p>
+        <h2>Подготовьте данные для расчёта</h2>
+        <p>Чтобы менеджер быстро рассчитал доставку, сообщите основные параметры объекта.</p>
+        <ul class="delivery-check-list">
+          {requestItems.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="section section-white">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">ПРОЦЕСС</p>
+        <h2>Как проходит доставка</h2>
+      </div>
+      <div class="delivery-process-list">
+        {deliverySteps.map((step, index) => (
+          <article class="delivery-process-step">
+            <span>{index + 1}</span>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <RequestSection title="Рассчитать бетон и доставку" />
 </BaseLayout>
+
+<style>
+  .delivery-card-grid,
+  .delivery-request-grid,
+  .delivery-process-list,
+  .delivery-note {
+    max-width: 1240px;
+  }
+
+  .delivery-hero {
+    padding: 72px 0 76px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 82% 36%, rgba(75, 132, 190, 0.18), rgba(75, 132, 190, 0) 34%),
+      linear-gradient(115deg, #f8fbfe 0%, #eef4f9 100%);
+  }
+
+  .delivery-hero-shell {
+    display: grid;
+    gap: 24px;
+  }
+
+  .delivery-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.88fr) minmax(520px, 1.12fr);
+    gap: 54px;
+    align-items: center;
+  }
+
+  .delivery-hero-copy {
+    max-width: 660px;
+  }
+
+  .delivery-hero-copy h1 {
+    margin: 0 0 16px;
+    color: var(--color-primary);
+    font-size: clamp(40px, 4.35vw, 64px);
+    line-height: 1.04;
+  }
+
+  .delivery-hero-lead {
+    margin: 0;
+    max-width: 620px;
+    color: #0f315c;
+    font-size: clamp(20px, 1.55vw, 25px);
+    font-weight: 800;
+    line-height: 1.36;
+  }
+
+  .delivery-hero-text {
+    margin: 16px 0 0;
+    max-width: 640px;
+    color: var(--color-muted);
+    font-size: 16.5px;
+    line-height: 1.66;
+  }
+
+  .delivery-hero-points {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .delivery-hero-points li {
+    position: relative;
+    min-height: 58px;
+    padding: 12px 14px 12px 22px;
+    border: 1px solid rgba(15, 49, 92, 0.1);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 12px;
+    color: var(--color-primary);
+    background: rgba(255, 255, 255, 0.86);
+    box-shadow: 0 8px 18px rgba(15, 49, 92, 0.05);
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+
+  .delivery-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .delivery-hero-actions .button {
+    min-height: 46px;
+    border-radius: 11px;
+  }
+
+  .delivery-hero-actions .button-outline {
+    color: var(--color-primary);
+    border-color: rgba(15, 49, 92, 0.38);
+    background: rgba(255, 255, 255, 0.72);
+    font-weight: 850;
+  }
+
+  .delivery-hero-actions .button-outline:hover,
+  .delivery-hero-actions .button-outline:focus-visible {
+    color: var(--color-primary);
+    border-color: rgba(15, 49, 92, 0.55);
+    background: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  .delivery-hero-media,
+  .delivery-request-media {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    border-radius: var(--radius);
+    background: var(--color-white);
+    box-shadow: 0 14px 34px rgba(15, 47, 87, 0.11);
+  }
+
+  .delivery-hero-media {
+    height: clamp(500px, 36vw, 560px);
+    border-radius: 24px;
+    box-shadow: 0 28px 72px rgba(15, 49, 92, 0.22);
+  }
+
+  .delivery-request-media {
+    aspect-ratio: 4 / 3;
+    border-radius: 18px;
+  }
+
+  .delivery-hero-media img,
+  .delivery-request-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .delivery-hero-media img {
+    object-position: center 56%;
+  }
+
+  .delivery-hero-media figcaption {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    bottom: auto;
+    left: auto;
+    width: min(265px, calc(100% - 44px));
+    padding: 13px 15px 13px 17px;
+    border: 1px solid rgba(244, 180, 0, 0.3);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 14px;
+    color: var(--color-primary);
+    background: rgba(255, 252, 242, 0.95);
+    box-shadow: 0 12px 30px rgba(15, 55, 99, 0.14);
+    backdrop-filter: blur(8px);
+  }
+
+  .delivery-hero-media strong,
+  .delivery-hero-media span {
+    display: block;
+  }
+
+  .delivery-hero-media strong {
+    margin-bottom: 4px;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  .delivery-hero-media span {
+    color: #4f6072;
+    font-size: 14px;
+  }
+
+  .delivery-hero-benefits {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    margin: 0;
+    padding: 16px 18px;
+    border: 1px solid rgba(15, 49, 92, 0.1);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 14px 34px rgba(15, 49, 92, 0.08);
+    list-style: none;
+  }
+
+  .delivery-hero-benefits li {
+    display: grid;
+    gap: 5px;
+    padding: 0 16px;
+  }
+
+  .delivery-hero-benefits li:first-child {
+    padding-left: 0;
+  }
+
+  .delivery-hero-benefits li + li {
+    border-left: 1px solid rgba(15, 49, 92, 0.09);
+  }
+
+  .delivery-hero-benefits li::before {
+    content: "";
+    width: 34px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--color-accent);
+  }
+
+  .delivery-hero-benefits strong {
+    color: var(--color-primary);
+    font-size: 16.5px;
+    line-height: 1.22;
+  }
+
+  .delivery-hero-benefits span {
+    color: var(--color-muted);
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+
+  .delivery-card-grid {
+    align-items: stretch;
+  }
+
+  .delivery-card {
+    position: relative;
+    min-height: 100%;
+    padding: 18px 20px 20px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+
+  .delivery-card::after {
+    content: "";
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+    left: 20px;
+    height: 3px;
+    border-radius: 999px 999px 0 0;
+    background: rgba(247, 181, 0, 0.65);
+  }
+
+  .delivery-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(15, 49, 92, 0.16);
+    box-shadow: 0 14px 30px rgba(15, 49, 92, 0.1);
+  }
+
+  .delivery-card-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 30px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    color: var(--color-primary);
+    background: rgba(247, 181, 0, 0.16);
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .delivery-card p,
+  .delivery-request-card p,
+  .delivery-note p {
+    color: var(--color-muted);
+    line-height: 1.55;
+  }
+
+  .delivery-card p {
+    margin: 0;
+  }
+
+  .delivery-request-grid {
+    align-items: center;
+    gap: 0;
+    padding: 18px;
+    border: 1px solid rgba(15, 49, 92, 0.08);
+    border-radius: 22px;
+    background: #eef3f8;
+    box-shadow: 0 12px 30px rgba(15, 49, 92, 0.06);
+  }
+
+  .delivery-request-card {
+    min-height: 100%;
+    padding: 26px;
+    border-radius: 18px;
+    box-shadow: 0 8px 22px rgba(15, 49, 92, 0.08);
+  }
+
+  .delivery-request-card h2 {
+    margin: 0 0 12px;
+    color: var(--color-primary);
+    font-size: clamp(28px, 3vw, 38px);
+    line-height: 1.12;
+  }
+
+  .delivery-request-card p {
+    margin: 0 0 18px;
+  }
+
+  .delivery-check-list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .delivery-check-list li {
+    position: relative;
+    padding-left: 26px;
+    color: var(--color-muted);
+  }
+
+  .delivery-check-list li::before {
+    content: "";
+    position: absolute;
+    top: 0.7em;
+    left: 0;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    box-shadow: 0 0 0 4px rgba(247, 181, 0, 0.14);
+  }
+
+  .delivery-media-tags {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    left: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .delivery-media-tags span {
+    padding: 7px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    color: var(--color-white);
+    background: rgba(15, 49, 92, 0.88);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .delivery-process-list {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    padding-top: 12px;
+  }
+
+  .delivery-process-list::before {
+    content: "";
+    position: absolute;
+    top: 45px;
+    right: 12.5%;
+    left: 12.5%;
+    height: 2px;
+    background: rgba(15, 49, 92, 0.14);
+  }
+
+  .delivery-process-step {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    padding: 12px 16px 0;
+    text-align: center;
+  }
+
+  .delivery-process-step span {
+    display: inline-grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 14px;
+    border: 6px solid var(--color-white);
+    border-radius: 50%;
+    color: var(--color-primary);
+    background: #f7b500;
+    box-shadow: 0 8px 20px rgba(15, 49, 92, 0.14);
+    font-weight: 800;
+  }
+
+  .delivery-process-step h3 {
+    margin: 0 0 8px;
+    color: var(--color-primary);
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .delivery-process-step p {
+    margin: 0;
+    color: var(--color-muted);
+    line-height: 1.5;
+  }
+
+  .delivery-note-section {
+    padding: 42px 0 54px;
+  }
+
+  .delivery-note {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 28px;
+    align-items: center;
+    padding: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    color: var(--color-white);
+    background: #0f315c;
+    box-shadow: 0 18px 38px rgba(15, 49, 92, 0.16);
+  }
+
+  .delivery-note::before {
+    content: "";
+    position: absolute;
+    top: 32px;
+    bottom: 32px;
+    left: 0;
+    width: 4px;
+    border-radius: 999px;
+    background: var(--color-accent);
+  }
+
+  .delivery-note h2 {
+    margin: 0 0 10px;
+    color: var(--color-white);
+    font-size: clamp(24px, 2.5vw, 32px);
+    line-height: 1.16;
+  }
+
+  .delivery-note p {
+    margin: 0;
+    max-width: 860px;
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  .delivery-note-button {
+    margin-top: 18px;
+  }
+
+  .delivery-note-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .delivery-note-list li {
+    position: relative;
+    padding-left: 22px;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.35;
+  }
+
+  .delivery-note-list li::before {
+    content: "";
+    position: absolute;
+    top: 0.58em;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-accent);
+  }
+
+  @media (max-width: 980px) {
+    .delivery-request-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .delivery-hero-grid {
+      grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
+      gap: 28px;
+    }
+
+    .delivery-hero-copy h1 {
+      font-size: clamp(34px, 4.7vw, 48px);
+    }
+
+    .delivery-hero-media {
+      height: 420px;
+    }
+
+    .delivery-hero-points {
+      grid-template-columns: 1fr;
+    }
+
+    .delivery-hero-benefits {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px 0;
+    }
+
+    .delivery-hero-benefits li:nth-child(odd) {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .delivery-hero-benefits li:nth-child(even) {
+      padding-right: 0;
+    }
+
+    .delivery-hero-benefits li:nth-child(n + 3) {
+      padding-top: 16px;
+      border-top: 1px solid rgba(15, 49, 92, 0.09);
+    }
+
+    .delivery-process-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .delivery-process-list::before {
+      display: none;
+    }
+
+    .delivery-process-step {
+      align-items: start;
+      justify-items: start;
+      padding: 18px;
+      border: 1px solid rgba(15, 49, 92, 0.08);
+      border-radius: var(--radius);
+      background: var(--color-white);
+      text-align: left;
+      box-shadow: 0 8px 18px rgba(15, 49, 92, 0.05);
+    }
+
+    .delivery-note {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .delivery-hero {
+      padding: 48px 0 54px;
+    }
+
+    .delivery-hero-grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .delivery-hero-copy h1 {
+      font-size: clamp(34px, 10vw, 44px);
+    }
+
+    .delivery-hero-actions,
+    .delivery-hero-actions .button {
+      width: 100%;
+    }
+
+    .delivery-hero-media {
+      height: auto;
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+    }
+
+    .delivery-hero-media figcaption {
+      top: 12px;
+      right: 12px;
+      bottom: auto;
+      left: auto;
+      width: min(290px, calc(100% - 24px));
+      padding: 12px 14px;
+    }
+
+    .delivery-hero-benefits {
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding: 14px;
+    }
+
+    .delivery-hero-benefits li,
+    .delivery-hero-benefits li:first-child,
+    .delivery-hero-benefits li:nth-child(even),
+    .delivery-hero-benefits li:nth-child(odd) {
+      padding: 14px 0;
+      border-left: 0;
+    }
+
+    .delivery-hero-benefits li:first-child {
+      padding-top: 0;
+    }
+
+    .delivery-hero-benefits li:last-child {
+      padding-bottom: 0;
+    }
+
+    .delivery-hero-benefits li + li,
+    .delivery-hero-benefits li:nth-child(n + 3) {
+      border-top: 1px solid rgba(15, 49, 92, 0.09);
+    }
+
+    .delivery-process-list {
+      grid-template-columns: 1fr;
+      position: relative;
+      gap: 0;
+      padding-left: 22px;
+    }
+
+    .delivery-process-list::before {
+      display: block;
+      top: 0;
+      bottom: 0;
+      left: 25px;
+      width: 2px;
+      height: auto;
+      background: rgba(15, 49, 92, 0.14);
+    }
+
+    .delivery-process-step {
+      margin-bottom: 16px;
+    }
+
+    .delivery-process-step span {
+      width: 42px;
+      height: 42px;
+      border-width: 5px;
+    }
+
+    .delivery-note {
+      padding: 26px 22px;
+    }
+
+    .delivery-note::before {
+      top: 0;
+      right: 22px;
+      bottom: auto;
+      left: 22px;
+      width: auto;
+      height: 4px;
+    }
+  }
+</style>

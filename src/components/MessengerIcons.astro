@@ -1,0 +1,44 @@
+---
+import { site } from "@lib/site";
+
+type Props = {
+  class?: string;
+  tone?: "default" | "light";
+};
+
+const { class: className = "", tone = "default" } = Astro.props;
+const rootClass = ["messenger-icons", `messenger-icons-${tone}`, className].filter(Boolean).join(" ");
+---
+
+<div class={rootClass}>
+  <a
+    class="messenger-icon messenger-icon-whatsapp"
+    href={site.whatsappHref}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Написать в WhatsApp"
+    title="WhatsApp"
+  >
+    <img src="/icons/whatsapp.svg" alt="" aria-hidden="true" />
+  </a>
+  <a
+    class="messenger-icon messenger-icon-max"
+    href={site.maxHref}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Написать в MAX"
+    title="MAX"
+  >
+    <img src="/icons/max.svg" alt="" aria-hidden="true" />
+  </a>
+  <a
+    class="messenger-icon messenger-icon-telegram"
+    href={site.telegramHref}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Написать в Telegram"
+    title="Telegram"
+  >
+    <img src="/icons/telegram.svg" alt="" aria-hidden="true" />
+  </a>
+</div>

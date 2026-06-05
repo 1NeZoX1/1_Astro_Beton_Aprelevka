@@ -1,0 +1,66 @@
+---
+import RequestForm from "@components/RequestForm.astro";
+import { site } from "@lib/site";
+
+type Props = {
+  title?: string;
+  productTitle?: string;
+};
+
+const { title = "Рассчитать бетон и доставку", productTitle = "" } = Astro.props;
+---
+
+<section class="section request-section">
+  <div class="container request-panel">
+    <div class="request-copy">
+      <div class="section-title">
+        <p class="eyebrow">Заявка</p>
+        <h2>{title}</h2>
+        <p>Укажите марку, объём и адрес объекта — подготовим расчёт стоимости бетона и доставки.</p>
+      </div>
+      <ul class="request-points">
+        <li>Доставка по Москве и МО</li>
+        <li>Расчёт по адресу и объёму</li>
+        <li>Подбор марки под задачу</li>
+      </ul>
+      <p class="request-contact-title">Связаться напрямую</p>
+      <div class="contact-buttons request-contact-buttons">
+        <a class="button button-primary" href={site.phonePrimaryHref}>{site.phonePrimary}</a>
+        <a class="button button-outline" href={site.phoneSecondaryHref}>{site.phoneSecondary}</a>
+        <div class="request-messenger-links">
+          <a
+            class="request-messenger-button"
+            href={site.whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Написать в WhatsApp"
+          >
+            <img src="/icons/whatsapp.svg" alt="" aria-hidden="true" />
+            <span>WhatsApp</span>
+          </a>
+          <a
+            class="request-messenger-button"
+            href={site.maxHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Написать в MAX"
+          >
+            <img src="/icons/max.svg" alt="" aria-hidden="true" />
+            <span>MAX</span>
+          </a>
+          <a
+            class="request-messenger-button"
+            href={site.telegramHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Написать в Telegram"
+          >
+            <img src="/icons/telegram.svg" alt="" aria-hidden="true" />
+            <span>Telegram</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <RequestForm productTitle={productTitle} />
+  </div>
+</section>

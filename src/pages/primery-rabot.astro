@@ -1,5 +1,5 @@
 ---
-import RequestForm from "@components/RequestForm.astro";
+import RequestSection from "@components/RequestSection.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 
 const works = [
@@ -83,23 +83,5 @@ const works = [
     </div>
   </section>
 
-  <section class="section section-white">
-    <div class="container request-panel">
-      <div class="section-title">
-        <p class="eyebrow">Заявка</p>
-        <h2>Подобрать бетон для похожего объекта</h2>
-        <p>Опишите задачу, объём и адрес доставки — подготовим расчёт под ваш объект.</p>
-        <div class="work-request-info">
-          <h3>Что указать в заявке</h3>
-          <ul>
-            <li>Марку бетона или тип работ</li>
-            <li>Примерный объём</li>
-            <li>Адрес доставки</li>
-          </ul>
-          <p>В комментарии можно указать подъезд к объекту, удобное время поставки и требования к подаче.</p>
-        </div>
-      </div>
-      <RequestForm />
-    </div>
-  </section>
+  <RequestSection title="Подобрать бетон для похожего объекта" />
 </BaseLayout>

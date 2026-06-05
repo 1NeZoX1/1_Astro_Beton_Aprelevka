@@ -1,7 +1,7 @@
 ---
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import ProductCard from "@components/ProductCard.astro";
-import RequestForm from "@components/RequestForm.astro";
+import RequestSection from "@components/RequestSection.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
   CPS_PRODUCT_TYPES,
@@ -239,16 +239,7 @@ const schema = breadcrumbSchema([
     </div>
   </section>
 
-  <section class="section section-white">
-    <div class="container request-panel">
-      <div class="section-title">
-        <p class="eyebrow">Заказ</p>
-        <h2>Заказать {category.title.toLowerCase()}</h2>
-        <p>Оставьте контакты, и заявка откроется в WhatsApp с заполненным текстом.</p>
-      </div>
-      <RequestForm productTitle={category.title} />
-    </div>
-  </section>
+  <RequestSection productTitle={category.title} />
 
   {hasCatalogFilters && (
     <script is:inline>

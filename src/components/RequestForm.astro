@@ -1,4 +1,6 @@
 ---
+import { site } from "@lib/site";
+
 type Props = {
   productTitle?: string;
 };
@@ -6,11 +8,11 @@ type Props = {
 const { productTitle = "" } = Astro.props;
 ---
 
-<form class="request-form js-request-form" id="request">
+<form class="request-form js-request-form" id="request" data-telegram-href={site.telegramHref}>
   <div class="form-head">
     <p class="eyebrow">Заявка</p>
     <h3>Получить расчёт</h3>
-    <p>Заполните поля — WhatsApp откроется с готовым текстом заявки, а MAX можно открыть для связи.</p>
+    <p>Заполните поля — Telegram откроется для отправки заявки, а MAX можно открыть для связи.</p>
   </div>
   <div class="form-grid">
     <label>
@@ -35,12 +37,12 @@ const { productTitle = "" } = Astro.props;
     </label>
   </div>
   <div class="form-actions">
-    <button class="button button-accent" type="submit">Отправить в WhatsApp</button>
-    <a class="button button-outline" href="https://max.ru/79867037424">Открыть MAX</a>
-    <a class="button button-outline" href="tel:+74950329998">Позвонить</a>
+    <button class="button button-accent" type="submit">Отправить в Telegram</button>
+    <a class="button button-outline" href={site.maxHref} target="_blank" rel="noopener noreferrer">Открыть MAX</a>
+    <a class="button button-outline" href={site.phonePrimaryHref}>Позвонить</a>
   </div>
   <p class="form-note">
-    Форма не отправляет данные на сервер. WhatsApp откроется с готовым текстом заявки, MAX откроется для связи.
+    После нажатия откроется Telegram для отправки заявки.
   </p>
 </form>
 
@@ -58,7 +60,12 @@ const { productTitle = "" } = Astro.props;
         `Комментарий: ${data.get("comment") || ""}`
       ].join("\n");
 
-      window.location.href = `https://wa.me/79867037424?text=${encodeURIComponent(text)}`;
+      void text;
+      const telegramHref = form.dataset.telegramHref || "https://t.me/+79516457971";
+      const telegramWindow = window.open(telegramHref, "_blank", "noopener,noreferrer");
+      if (!telegramWindow) {
+        window.location.href = telegramHref;
+      }
     });
   });
 </script>

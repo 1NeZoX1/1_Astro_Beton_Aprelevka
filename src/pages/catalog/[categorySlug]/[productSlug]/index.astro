@@ -2,17 +2,17 @@
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import ContactButtons from "@components/ContactButtons.astro";
 import ProductCard from "@components/ProductCard.astro";
-import RequestForm from "@components/RequestForm.astro";
+import RequestSection from "@components/RequestSection.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import {
   formatProductPrice,
+  getConcreteDeliveryEquipmentProducts,
   getProductSpecs,
   getRelatedProducts,
   products,
   type Product
 } from "@lib/catalog";
 import { breadcrumbSchema } from "@lib/schema";
-import { site } from "@lib/site";
 
 export function getStaticPaths() {
   return products.map((product) => ({
@@ -27,26 +27,111 @@ type Props = {
 
 const { product } = Astro.props;
 const specs = getProductSpecs(product.title);
-const related = getRelatedProducts(product);
+const related = getRelatedProducts(product, 3);
+const isEquipmentProduct = product.categorySlug === "arenda-tehniki";
+const isMortarProduct = product.categorySlug === "rastvory-i-cps";
+const equipmentProducts = isEquipmentProduct ? [] : getConcreteDeliveryEquipmentProducts(2);
+const descriptionText = isEquipmentProduct
+  ? "Техника подбирается под условия объекта: высоту и дальность подачи, объём работ, подъезд к площадке и время использования."
+  : isMortarProduct
+    ? "Смесь используется для кладочных, монтажных и общестроительных работ. Подбор состава зависит от типа работ, основания, требуемой прочности и условий применения."
+    : "Эта позиция подходит для строительных и монолитных работ, где важны прочность, стабильность состава и соответствие параметров задаче. Итоговый подбор марки зависит от проекта, условий эксплуатации, объёма и требований к конструкции.";
+const suitabilityItems = isEquipmentProduct
+  ? [
+      "подача бетона на расстояние",
+      "подача смеси на высоту",
+      "работа на объектах со сложным подъездом",
+      "ускорение монолитных работ"
+    ]
+  : isMortarProduct
+    ? [
+        "кладочные работы",
+        "монтажные работы",
+        "подготовка оснований",
+        "строительные и ремонтные задачи"
+      ]
+    : [
+        "фундаменты",
+        "монолитные конструкции",
+        "плиты и перекрытия",
+        "площадки и основания",
+        "частное, жилое и промышленное строительство"
+      ];
+const parameterDescriptions = specs
+  .map((spec) => {
+    if (/^[МM]\d+/i.test(spec.value)) {
+      return `Марка ${spec.value} — показатель прочности смеси.`;
+    }
+
+    if (/^[BВ]\d+/i.test(spec.value)) {
+      return `Класс ${spec.value} — класс бетона по прочности на сжатие.`;
+    }
+
+    if (/^П\d+/i.test(spec.value)) {
+      return `Подвижность ${spec.value} — удобоукладываемость бетонной смеси.`;
+    }
+
+    if (/^F\d+/i.test(spec.value)) {
+      return `Морозостойкость ${spec.value} — устойчивость к циклам замораживания и оттаивания.`;
+    }
+
+    if (/^W\d+/i.test(spec.value)) {
+      return `Водонепроницаемость ${spec.value} — сопротивление проникновению воды.`;
+    }
+
+    return undefined;
+  })
+  .filter((description): description is string => Boolean(description));
+const costDescription = isEquipmentProduct
+  ? "Итоговая стоимость зависит от адреса объекта, времени работы, условий подъезда, высоты и дальности подачи, а также необходимости дополнительного оборудования."
+  : "Цена за 1 м³ или стоимость позиции — только часть расчёта. Итоговая стоимость зависит от объёма, адреса объекта, расстояния доставки, условий подъезда, времени поставки и необходимости подачи смеси.";
+const costFactors = isEquipmentProduct
+  ? [
+      "адрес объекта",
+      "время работы",
+      "условия подъезда",
+      "высота и дальность подачи",
+      "дополнительное оборудование"
+    ]
+  : [
+      "объём заказа",
+      "адрес доставки",
+      "условия подъезда",
+      "время поставки",
+      "необходимость автобетононасоса или дополнительной техники"
+    ];
+const orderSteps = isEquipmentProduct
+  ? [
+      "Сообщите адрес объекта.",
+      "Уточните объём, высоту или расстояние подачи.",
+      "Менеджер подберёт технику.",
+      "Согласуем время и условия работы."
+    ]
+  : [
+      "Укажите марку или опишите задачу.",
+      "Сообщите объём и адрес объекта.",
+      "Менеджер рассчитает стоимость с учётом доставки.",
+      "Согласуем время поставки и удобный способ связи."
+    ];
 const canonicalBase = Astro.site ?? "https://example.com";
 const productPath = `/catalog/${product.categorySlug}/${product.slug}/`;
 const priceNote =
   product.categorySlug === "arenda-tehniki"
-    ? "Стоимость указана без учета дополнительных условий объекта. Итоговый расчет уточняется по заявке."
-    : "Цена указана за 1 м³ без учета доставки.";
+    ? "Стоимость указана без учёта дополнительных условий объекта. Итоговый расчёт уточняется по заявке."
+    : "Цена указана за 1 м³ без учёта доставки.";
 const offerNotes =
   product.categorySlug === "arenda-tehniki"
     ? [
-        "Цена указана без учета дополнительных условий объекта;",
-        "Итоговая стоимость зависит от адреса и времени работы;",
-        "Доставка и подача рассчитываются отдельно;",
-        "Можно заказать через WhatsApp или по телефону."
+        "Стоимость указана без учёта дополнительных условий объекта.",
+        "Итоговая стоимость зависит от адреса, времени работы и условий подъезда.",
+        "Подбор техники зависит от высоты и дальности подачи.",
+        "Менеджер уточнит параметры и подготовит расчёт."
       ]
     : [
-        "Цена указана за 1 м³;",
-        "Доставка рассчитывается отдельно;",
-        "Итоговая стоимость зависит от адреса и объема;",
-        "Можно заказать через WhatsApp или по телефону."
+        "Цена указана за 1 м³ без учёта доставки.",
+        "Итоговая стоимость зависит от адреса, объёма и условий подъезда.",
+        "Менеджер рассчитает доставку и подскажет удобное время поставки.",
+        "При необходимости подберём технику для подачи смеси."
       ];
 const crumbs = [
   { label: "Главная", href: "/" },
@@ -93,12 +178,12 @@ const structuredData = [
           <ContactButtons productTitle={product.title} />
         </div>
         <aside class="offer-summary">
-          <p class="eyebrow">Расчет стоимости</p>
-          <h2>Коммерческое предложение</h2>
+          <p class="eyebrow">РАСЧЁТ СТОИМОСТИ</p>
+          <h2>Получить расчёт по объекту</h2>
           <ul>
             {offerNotes.map((note) => <li>{note}</li>)}
           </ul>
-          <a class="button button-accent" href="#request">Получить расчет</a>
+          <a class="button button-accent" href="#request">Получить расчёт</a>
         </aside>
       </div>
     </div>
@@ -108,57 +193,204 @@ const structuredData = [
     <section class="section section-white">
       <div class="container">
         <div class="section-title">
-          <p class="eyebrow">Характеристики</p>
-          <h2>Параметры из названия</h2>
+          <p class="eyebrow">ХАРАКТЕРИСТИКИ</p>
+          <h2>Характеристики</h2>
         </div>
         <ul class="spec-list">
           {specs.map((spec) => (
             <li><span>{spec.label}</span><strong>{spec.value}</strong></li>
           ))}
         </ul>
+        {parameterDescriptions.length > 0 && (
+          <ul class="parameter-note-list" aria-label="Расшифровка параметров">
+            {parameterDescriptions.map((description) => <li>{description}</li>)}
+          </ul>
+        )}
       </div>
     </section>
   )}
 
-  <section class="section">
-    <div class="container grid grid-3">
-      <article class="info-card">
-        <h3>Где применяется</h3>
-        <p>Подходит для строительных задач, где в проекте указана соответствующая марка и параметры смеси.</p>
-      </article>
-      <article class="info-card">
-        <h3>Как заказать</h3>
-        <p>Сообщите марку, объем, адрес объекта и желаемое время подачи. Стоимость доставки рассчитывается отдельно.</p>
-      </article>
-      <article class="info-card">
-        <h3>Контакты</h3>
-        <p>{site.phonePrimary}<br />{site.phoneSecondary}<br />WhatsApp: {site.whatsapp}</p>
-      </article>
-    </div>
-  </section>
+  <section class="section product-info-section">
+    <div class="container">
+      <div class="grid grid-2 product-info-grid">
+        <article class="info-card product-info-card">
+          <p class="eyebrow">ОПИСАНИЕ</p>
+          <h2>Описание и применение</h2>
+          <p>{descriptionText}</p>
+        </article>
 
-  <section class="section section-white">
-    <div class="container request-panel">
-      <div class="section-title">
-        <p class="eyebrow">Заявка</p>
-        <h2>Заказать {product.title}</h2>
-        <p>Форма сформирует текст заявки и откроет WhatsApp на номер {site.whatsapp}.</p>
+        <article class="info-card product-info-card">
+          <h2>Для чего подходит</h2>
+          <ul class="compact-check-list">
+            {suitabilityItems.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
       </div>
-      <RequestForm productTitle={product.title} />
+
+      <div class="grid grid-2 product-info-grid">
+        <article class="info-card product-info-card">
+          <h2>Что влияет на итоговую стоимость</h2>
+          <p>{costDescription}</p>
+          <ul class="compact-check-list">
+            {costFactors.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+
+        <article class="info-card product-info-card">
+          <h2>Как заказать</h2>
+          <ol class="compact-step-list">
+            {orderSteps.map((step) => <li>{step}</li>)}
+          </ol>
+        </article>
+      </div>
     </div>
   </section>
 
-  {related.length > 0 && (
+  {!isEquipmentProduct && (
     <section class="section">
       <div class="container">
         <div class="section-title">
-          <p class="eyebrow">Похожие товары</p>
-          <h2>Еще из категории «{product.category}»</h2>
+          <p class="eyebrow">СПЕЦТЕХНИКА</p>
+          <h2>Техника для подачи бетона</h2>
+          <p>Если нужно подать смесь на расстояние или высоту, подберём автобетононасос под адрес, объём и условия объекта.</p>
+          <p>Автобетононасос подбирается по высоте подачи, расстоянию, объёму и условиям подъезда.</p>
         </div>
-        <div class="grid grid-3">
+        {equipmentProducts.length > 0 ? (
+          <div class="grid grid-2 product-recommendation-grid">
+            {equipmentProducts.map((item) => <ProductCard product={item} />)}
+          </div>
+        ) : (
+          <article class="info-card product-recommendation-cta">
+            <h3>Автобетононасос под объект</h3>
+            <p>Подберём технику по адресу, объёму и условиям подъезда.</p>
+            <a class="button button-accent" href="#request">Рассчитать подачу</a>
+          </article>
+        )}
+      </div>
+    </section>
+  )}
+
+  {related.length > 0 && (
+    <section class="section section-white">
+      <div class="container">
+        <div class="section-title">
+          <p class="eyebrow">РЕКОМЕНДАЦИИ</p>
+          <h2>Похожие позиции</h2>
+        </div>
+        <div class="grid grid-3 product-recommendation-grid">
           {related.map((item) => <ProductCard product={item} />)}
         </div>
       </div>
     </section>
   )}
+
+  <RequestSection productTitle={product.title} />
 </BaseLayout>
+
+<style>
+  .parameter-note-list {
+    display: grid;
+    gap: 8px;
+    max-width: 920px;
+    margin: 18px 0 0;
+    padding: 0;
+    color: var(--color-muted);
+    font-size: 15px;
+    line-height: 1.45;
+    list-style: none;
+  }
+
+  .parameter-note-list li {
+    padding-left: 18px;
+    position: relative;
+  }
+
+  .parameter-note-list li::before {
+    content: "";
+    position: absolute;
+    top: 0.66em;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-accent);
+  }
+
+  .product-info-section {
+    padding-top: 56px;
+  }
+
+  .product-info-grid {
+    align-items: stretch;
+    gap: 18px;
+  }
+
+  .product-info-grid + .product-info-grid {
+    margin-top: 18px;
+  }
+
+  .product-info-card {
+    padding: 22px;
+  }
+
+  .product-info-card h2 {
+    margin: 0 0 12px;
+    color: var(--color-primary);
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  .product-info-card p {
+    margin: 0;
+    color: var(--color-muted);
+    line-height: 1.55;
+  }
+
+  .product-info-card p + .compact-check-list {
+    margin-top: 14px;
+  }
+
+  .compact-check-list,
+  .compact-step-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    color: var(--color-muted);
+    line-height: 1.45;
+  }
+
+  .compact-check-list {
+    list-style: none;
+  }
+
+  .compact-check-list li {
+    position: relative;
+    padding-left: 24px;
+  }
+
+  .compact-check-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: 800;
+  }
+
+  .compact-step-list {
+    padding-left: 22px;
+  }
+
+  .product-recommendation-grid {
+    align-items: stretch;
+  }
+
+  .product-recommendation-cta {
+    max-width: 520px;
+    padding: 24px;
+  }
+
+  .product-recommendation-cta p {
+    margin-bottom: 18px;
+  }
+</style>

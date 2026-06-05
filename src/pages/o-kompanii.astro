@@ -1,6 +1,5 @@
 ---
-import ContactButtons from "@components/ContactButtons.astro";
-import RequestForm from "@components/RequestForm.astro";
+import RequestSection from "@components/RequestSection.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { site } from "@lib/site";
 ---
@@ -9,62 +8,182 @@ import { site } from "@lib/site";
   title="О компании"
   description="О компании ЛИДЕР БЕТОН ГРУПП: поставка бетона и строительных смесей с доставкой по Москве и Московской области."
 >
-  <section class="section-tight">
+  <section class="about-intro-section">
+    <div class="container container-wide about-intro-shell">
+      <div class="about-intro-grid">
+        <div class="section-title about-intro-copy">
+          <p class="eyebrow">{site.legalName}</p>
+          <h1>О компании</h1>
+          <p class="about-intro-lead">
+            Поставляем бетон, растворы и строительные смеси для частных, жилых и промышленных объектов в Москве и Московской области.
+          </p>
+          <div class="about-intro-text">
+            <p>
+              Мы работаем с заявками, где важно не просто назвать цену за 1 м³, а правильно учесть марку смеси, объём, адрес доставки, подъезд к
+              объекту и условия разгрузки. Поэтому итоговая стоимость — это <strong>индивидуальный расчёт</strong> под конкретный объект.
+            </p>
+            <p>
+              Менеджер помогает выполнить <strong>подбор марки</strong>, <strong>согласование поставки</strong> и выбрать удобный способ связи:
+              телефон, Telegram, MAX или WhatsApp.
+            </p>
+          </div>
+          <div class="about-intro-actions">
+            <a class="button button-accent" href="#request">Получить расчёт</a>
+            <a class="button button-outline" href="/catalog/">Каталог и цены</a>
+          </div>
+        </div>
+
+        <div class="about-intro-media">
+          <img
+            src="/images/about-company-mixer.webp"
+            alt="Автобетоносмеситель на производственной площадке"
+            loading="eager"
+            decoding="async"
+          />
+          <div class="about-intro-photo-note">
+            <strong>Собственное производство</strong>
+            <span>Бетон, растворы и строительные смеси для объектов в Москве и Московской области.</span>
+          </div>
+        </div>
+      </div>
+
+      <ul class="about-intro-benefits" aria-label="Преимущества компании">
+        <li>
+          <strong>Поставка по Москве и МО</strong>
+          <span>Работаем с частными, жилыми и промышленными объектами.</span>
+        </li>
+        <li>
+          <strong>Подбор марки под задачу</strong>
+          <span>Учитываем тип работ и требования к смеси.</span>
+        </li>
+        <li>
+          <strong>Расчёт по адресу и объёму</strong>
+          <span>Считаем стоимость под параметры объекта.</span>
+        </li>
+        <li>
+          <strong>Согласование времени доставки</strong>
+          <span>Уточняем поставку до отправки машины.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section-white about-directions-section">
     <div class="container">
       <div class="section-title">
-        <p class="eyebrow">{site.legalName}</p>
-        <h1>О компании</h1>
-        <p>
-          ООО «ЛИДЕР БЕТОН ГРУПП» занимается поставкой бетона и строительных
-          смесей с доставкой по Москве и Московской области. Мы помогаем
-          подобрать подходящую марку бетона под задачу объекта и рассчитываем
-          итоговую стоимость с учетом адреса доставки, объема заказа и условий
-          подъезда.
-        </p>
+        <p class="eyebrow">Направления</p>
+        <h2>Что мы делаем</h2>
       </div>
-
-      <div class="grid grid-3">
-        <article class="info-card">
-          <h2>Что поставляем</h2>
-          <p>
-            В каталоге представлены товарный бетон, бетон с ПМД, фибробетон,
-            керамзитобетон, сухой бетон, растворы, ЦПС и дополнительные позиции
-            для строительных работ.
-          </p>
+      <div class="about-directions-grid">
+        <article class="info-card about-direction-card">
+          <h3>Поставляем бетон и растворы</h3>
+          <p>Товарный бетон, бетон с ПМД, фибробетон, керамзитобетон, сухие смеси, растворы и ЦПС.</p>
         </article>
-        <article class="info-card">
-          <h2>Как работаем</h2>
-          <p>
-            Заявка принимается через форму, телефон, WhatsApp или MAX. Для
-            расчета нужны марка смеси, объем, адрес объекта и условия подъезда.
-          </p>
+        <article class="info-card about-direction-card">
+          <h3>Подбираем марку под задачу</h3>
+          <p>Помогаем выбрать состав для фундамента, плиты, стяжки, монолитных работ, кладки и других строительных задач.</p>
         </article>
-        <article class="info-card">
-          <h2>Документы и расчет стоимости</h2>
-          <p>
-            Стоимость рассчитывается индивидуально. При уточнении заказа можно
-            запросить документы и согласовать параметры поставки бетона от
-            завода.
-          </p>
+        <article class="info-card about-direction-card">
+          <h3>Рассчитываем доставку</h3>
+          <p>Учитываем адрес, объём, подъезд, время поставки и необходимость техники для подачи смеси.</p>
+        </article>
+        <article class="info-card about-direction-card">
+          <h3>Согласуем заказ до отправки</h3>
+          <p>Уточняем параметры, контактное лицо, объект, удобный способ связи и время поставки.</p>
         </article>
       </div>
     </div>
   </section>
 
-  <section class="section section-white">
-    <div class="container request-panel">
-      <div>
+  <section class="section about-plant-section">
+    <div class="container about-plant-panel">
+      <div class="about-plant-copy">
         <div class="section-title">
-          <p class="eyebrow">Связаться</p>
-          <h2>Рассчитать поставку бетона</h2>
+          <h2>Производственная площадка в Апрелевке</h2>
           <p>
-            Укажите параметры объекта, и заявка откроется в WhatsApp с
-            заполненным текстом.
+            Поставка выполняется с производственной площадки в Апрелевке. Это удобно для объектов в Москве и Московской области: маршрут,
+            объём и время поставки согласуются под конкретный адрес.
           </p>
         </div>
-        <ContactButtons />
+        <div class="about-plant-points">
+          <article>
+            <h3>Лабораторный контроль</h3>
+            <p>Контролируем состав и характеристики бетонных смесей.</p>
+          </article>
+          <article>
+            <h3>Доставка под объект</h3>
+            <p>Подбираем способ поставки с учётом адреса, объёма и условий подъезда.</p>
+          </article>
+        </div>
       </div>
-      <RequestForm />
+      <div class="about-plant-media">
+        <img
+          src="/images/lider-beton-aprelevka-plant.webp"
+          alt="Бетонный завод в Апрелевке"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
     </div>
   </section>
+
+  <section class="section section-white about-process-section">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">Процесс</p>
+        <h2>Как проходит заказ</h2>
+      </div>
+      <ol class="about-process-list">
+        <li>
+          <span>1</span>
+          <div>
+            <h3>Получаем заявку</h3>
+            <p>Марка или тип работ, объём, адрес и комментарий по объекту.</p>
+          </div>
+        </li>
+        <li>
+          <span>2</span>
+          <div>
+            <h3>Уточняем условия</h3>
+            <p>Проверяем подъезд, время поставки, контактное лицо и способ связи.</p>
+          </div>
+        </li>
+        <li>
+          <span>3</span>
+          <div>
+            <h3>Считаем стоимость</h3>
+            <p>Рассчитываем смесь и доставку индивидуально под объект.</p>
+          </div>
+        </li>
+        <li>
+          <span>4</span>
+          <div>
+            <h3>Согласуем поставку</h3>
+            <p>Подтверждаем параметры заказа и время отправки машины.</p>
+          </div>
+        </li>
+        <li>
+          <span>5</span>
+          <div>
+            <h3>Доставляем бетон</h3>
+            <p>Организуем поставку на объект в согласованное время.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section about-calculation-section">
+    <div class="container">
+      <div class="about-calculation-card">
+        <h2>Почему расчёт индивидуальный</h2>
+        <p>
+          Цена бетона за 1 м³ — только часть итоговой стоимости. На расчёт влияет адрес объекта, объём, расстояние доставки, условия подъезда,
+          время поставки и необходимость подачи смеси. Поэтому мы уточняем параметры заранее и даём расчёт под конкретную задачу.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <RequestSection />
 </BaseLayout>

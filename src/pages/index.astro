@@ -1,36 +1,36 @@
 ---
 import CategoryGrid from "@components/CategoryGrid.astro";
-import RequestForm from "@components/RequestForm.astro";
+import MessengerIcons from "@components/MessengerIcons.astro";
+import RequestSection from "@components/RequestSection.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { categories, categoryPages, products } from "@lib/catalog";
+import { categoryPages } from "@lib/catalog";
 import { faqSchema } from "@lib/schema";
 import { site } from "@lib/site";
 
-const heroWhatsappText = encodeURIComponent("Здравствуйте! Хочу узнать стоимость бетона и доставки.");
 const faqItems = [
   {
-    question: "Цены указаны с доставкой?",
-    answer: "Нет, цены указаны за 1 м³ без учёта доставки. Итоговая стоимость рассчитывается индивидуально по адресу объекта и объёму заказа."
+    question: "Указана ли доставка в стоимости бетона?",
+    answer: "Нет. В каталоге указана цена за 1 м³ бетона без учёта доставки. Итоговая стоимость рассчитывается индивидуально с учётом адреса объекта, объёма заказа и условий подъезда."
   },
   {
-    question: "Как рассчитать стоимость доставки?",
-    answer: "Для расчёта нужны марка бетона или смеси, объём и адрес доставки. Эти данные можно отправить через форму, WhatsApp, MAX или сообщить по телефону."
+    question: "Как рассчитывается стоимость доставки?",
+    answer: "Стоимость зависит от удалённости объекта, объёма заказа, количества необходимых машин, времени подачи и условий разгрузки. Для точного расчёта сообщите менеджеру адрес и основные параметры заказа."
   },
   {
-    question: "Можно ли заказать бетон в Московскую область?",
-    answer: "Да, принимаем заявки для объектов в Москве и Московской области. Возможность и стоимость доставки рассчитываются по адресу."
+    question: "Выполняете ли доставку по Московской области?",
+    answer: "Да, доставляем бетон и строительные смеси по Москве и Московской области. Возможность и условия поставки по конкретному адресу уточнит менеджер."
   },
   {
     question: "Какой объём можно заказать?",
-    answer: "Базовая единица цены — 1 м³. Итоговый объём и условия поставки уточняются при расчёте заявки."
+    answer: "Объём заказа рассчитывается в кубических метрах. Возможность поставки нужного объёма зависит от марки смеси, адреса объекта и графика производства и доставки."
   },
   {
-    question: "Поможете подобрать марку бетона?",
-    answer: "Да, можно описать задачу, тип работ и условия объекта. Мы поможем подобрать подходящую марку и рассчитать стоимость."
+    question: "Поможете подобрать подходящую марку бетона?",
+    answer: "Да. Сообщите тип работ, назначение конструкции и условия эксплуатации — менеджер поможет подобрать подходящую марку и характеристики смеси."
   },
   {
     question: "Как оформить заявку?",
-    answer: "Оставьте заявку через форму на сайте, напишите в WhatsApp или MAX либо позвоните по телефону отдела продаж."
+    answer: "Оставьте заявку через форму на сайте или свяжитесь с отделом продаж по телефону, в Telegram, WhatsApp или MAX. Укажите марку или задачу, объём и адрес доставки."
   }
 ];
 ---
@@ -38,34 +38,57 @@ const faqItems = [
 <BaseLayout title={site.title} description={site.description} structuredData={[faqSchema(faqItems)]} showBottomMap={false}>
   <section class="hero">
     <div class="container hero-grid">
-      <div>
-        <p class="eyebrow">{site.legalName}</p>
+      <div class="hero-copy">
+        <p class="eyebrow">БЕТОН С ЗАВОДА В АПРЕЛЕВКЕ</p>
         <h1>Бетон с доставкой<br />по Москве и области</h1>
         <p class="lead">
-          Каталог бетонных смесей, цены за 1 м³ и заявка на поставку бетона от завода.
-          Работаем с объектами в Москве и Московской области.
+          Подберём марку под задачу, рассчитаем бетон и доставку, согласуем время поставки на объект.
         </p>
-        <div class="hero-points" aria-label="Преимущества поставки">
-          <span>Доставка по Москве и области</span>
-          <span>Цены за 1 м³</span>
-          <span>Расчет под объект</span>
-        </div>
         <div class="hero-actions">
-          <a class="button button-primary hero-catalog-cta" href="/catalog/">Смотреть каталог и цены</a>
-          <a class="button button-whatsapp" href={`${site.whatsappHref}?text=${heroWhatsappText}`}>Написать в WhatsApp</a>
+          <a class="button button-accent hero-request-cta" href="#request">Получить расчёт</a>
+          <a class="button hero-catalog-cta" href="/catalog/">Смотреть каталог и цены</a>
         </div>
-        <div class="hero-stats" aria-label="Ключевые сведения">
-          <div class="stat"><strong>{products.length}</strong><span>позиций в примере каталога</span></div>
-          <div class="stat"><strong>{categories.length}</strong><span>категорий продукции</span></div>
-          <div class="stat"><strong>1 м³</strong><span>базовая единица цены</span></div>
+        <div class="hero-contact-block" aria-label="Связаться с отделом продаж">
+          <p>Связаться напрямую</p>
+          <div class="hero-contact-phones">
+            <a class="hero-phone-link" href={site.phonePrimaryHref}>{site.phonePrimary}</a>
+            <a class="hero-phone-link hero-phone-link-secondary" href={site.phoneSecondaryHref}>{site.phoneSecondary}</a>
+          </div>
+          <div class="hero-contact-messengers">
+            <a href={site.whatsappHref} target="_blank" rel="noopener noreferrer" aria-label="Написать в WhatsApp">
+              <img src="/icons/whatsapp.svg" alt="" aria-hidden="true" />
+              <span>WhatsApp</span>
+            </a>
+            <a href={site.telegramHref} target="_blank" rel="noopener noreferrer" aria-label="Написать в Telegram">
+              <img src="/icons/telegram.svg" alt="" aria-hidden="true" />
+              <span>Telegram</span>
+            </a>
+            <a href={site.maxHref} target="_blank" rel="noopener noreferrer" aria-label="Написать в MAX">
+              <img src="/icons/max.svg" alt="" aria-hidden="true" />
+              <span>MAX</span>
+            </a>
+          </div>
         </div>
       </div>
       <div class="hero-media">
         <img src="/images/lider-beton-hero-zavod.webp" alt="Бетонный завод ЛИДЕР БЕТОН ГРУПП" loading="eager" />
-        <span class="hero-region-badge">Москва и МО</span>
         <div class="hero-media-card">
-          <strong>Бетон, растворы и смеси</strong>
-          <span>Подберем марку, объем и доставку под задачу</span>
+          <strong>Поставка с завода на объект</strong>
+          <span>Москва и Московская область</span>
+        </div>
+      </div>
+      <div class="hero-proof-strip" aria-label="Преимущества поставки">
+        <div>
+          <strong>Завод в Апрелевке</strong>
+          <span>Собственная производственная площадка</span>
+        </div>
+        <div>
+          <strong>Контроль состава</strong>
+          <span>Подбор смеси под задачу</span>
+        </div>
+        <div>
+          <strong>Доставка по Москве и МО</strong>
+          <span>Расчёт под адрес и объём</span>
         </div>
       </div>
     </div>
@@ -83,7 +106,7 @@ const faqItems = [
   </section>
 
   <section class="section section-white">
-    <div class="container home-info-section">
+    <div class="container container-wide home-info-section home-production-section">
       <div class="section-title">
         <p class="eyebrow">Преимущества</p>
         <h2>Производство, контроль и доставка бетона</h2>
@@ -118,17 +141,19 @@ const faqItems = [
           </div>
         </article>
       </div>
+    </div>
 
+    <div class="container container-relaxed home-order-section">
       <div class="section-title order-title">
         <p class="eyebrow">Заказ</p>
         <h2>Как заказать</h2>
-        <p>Для расчёта достаточно указать марку, объём и адрес доставки. Позвоните, напишите в WhatsApp или MAX — либо отправьте заявку через форму ниже.</p>
+        <p>Для расчёта достаточно указать марку, объём и адрес доставки. Позвоните, напишите в Telegram, WhatsApp или MAX — либо отправьте заявку через форму ниже.</p>
       </div>
       <div class="order-steps">
         <article class="order-step">
           <span>1</span>
           <h3>Свяжитесь с нами</h3>
-          <p>Позвоните, напишите в WhatsApp или MAX, либо заполните форму ниже.</p>
+          <p>Позвоните, напишите в Telegram, WhatsApp или MAX, либо заполните форму ниже.</p>
         </article>
         <article class="order-step">
           <span>2</span>
@@ -149,43 +174,18 @@ const faqItems = [
       <div class="order-cta">
         <p>Подготовьте марку, объём и адрес — рассчитаем стоимость под ваш объект.</p>
         <div class="order-cta-actions">
-          <a class="button button-outline" href="tel:+74950329998">Позвонить</a>
-          <a class="button button-outline" href={site.whatsappHref}>WhatsApp</a>
-          <a class="button button-outline" href={site.maxHref}>MAX</a>
+          <a class="button button-outline" href={site.phonePrimaryHref}>Позвонить</a>
+          <MessengerIcons />
           <a class="button button-accent" href="#request">Перейти к заявке</a>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section request-section">
-    <div class="container request-panel">
-      <div class="request-copy">
-        <div class="section-title">
-          <p class="eyebrow">Заявка</p>
-          <h2>Рассчитать бетон и доставку</h2>
-          <p>Укажите марку, объём и адрес объекта — подготовим расчёт стоимости бетона и доставки. Связаться можно по телефону, в WhatsApp или MAX.</p>
-        </div>
-        <ul class="request-points">
-          <li>Доставка по Москве и МО</li>
-          <li>Расчёт по адресу и объёму</li>
-          <li>Подбор марки под задачу</li>
-        </ul>
-        <p class="request-contact-title">Связаться напрямую</p>
-        <div class="contact-buttons request-contact-buttons">
-          <a class="button button-primary" href="tel:+74950329998">+7 (495) 032-99-98</a>
-          <a class="button button-outline" href="tel:+74950326040">+7 (495) 032-60-40</a>
-          <a class="button button-outline" href={site.whatsappHref}>WhatsApp</a>
-          <a class="button button-outline" href={site.maxHref}>MAX</a>
-        </div>
-        <p class="request-copy-note">Форма подготовит заявку для WhatsApp, а MAX можно открыть для связи.</p>
-      </div>
-      <RequestForm />
-    </div>
-  </section>
+  <RequestSection />
 
   <section class="section section-white">
-    <div class="container">
+    <div class="container container-wide home-work-container">
       <div class="section-title">
         <p class="eyebrow">Примеры работ</p>
         <h2>Примеры поставки бетона на объекты</h2>
@@ -227,7 +227,7 @@ const faqItems = [
   </section>
 
   <section class="section section-white contact-map-section">
-    <div class="container grid grid-2">
+    <div class="container container-wide grid grid-2 home-map-container">
       <div class="contact-map-copy">
         <div class="section-title">
           <p class="eyebrow">Карта</p>
@@ -240,10 +240,9 @@ const faqItems = [
           <li><span>Расчёт</span><strong>по адресу и объёму</strong></li>
         </ul>
         <div class="contact-map-buttons">
-          <a class="button button-primary" href="tel:+74950329998">+7 (495) 032-99-98</a>
-          <a class="button button-outline" href="tel:+74950326040">+7 (495) 032-60-40</a>
-          <a class="button button-outline" href={site.whatsappHref}>WhatsApp</a>
-          <a class="button button-outline" href={site.maxHref}>MAX</a>
+          <a class="button button-primary" href={site.phonePrimaryHref}>+7 (495) 032-99-98</a>
+          <a class="button button-outline" href={site.phoneSecondaryHref}>+7 (495) 032-60-40</a>
+          <MessengerIcons />
         </div>
       </div>
       <div class="map-fallback-card">
@@ -270,16 +269,26 @@ const faqItems = [
     </div>
   </section>
 
-  <section class="section section-white">
-    <div class="container">
-      <div class="section-title">
-        <p class="eyebrow">FAQ</p>
-        <h2>Частые вопросы</h2>
+  <section class="section home-faq-section">
+    <div class="container container-relaxed home-faq-grid">
+      <div class="home-faq-copy">
+        <div class="section-title home-faq-title">
+          <p class="eyebrow">FAQ</p>
+          <h2>Частые вопросы</h2>
+          <p>Ответили на основные вопросы о ценах, доставке, подборе бетона и оформлении заказа.</p>
+        </div>
+        <div class="home-faq-cta">
+          <p>Не нашли нужную информацию? Сообщите параметры объекта — менеджер уточнит детали и подготовит расчёт.</p>
+          <a class="button button-accent" href="#request">Получить расчёт</a>
+        </div>
       </div>
-      <div class="faq-list">
+      <div class="faq-list home-faq-list">
         {faqItems.map((item, index) => (
-          <details class="faq-item" open={index === 0}>
-            <summary>{item.question}</summary>
+          <details class="faq-item home-faq-item" name="home-faq" open={index === 0}>
+            <summary>
+              <span class="faq-number">{String(index + 1).padStart(2, "0")}</span>
+              <span class="faq-question">{item.question}</span>
+            </summary>
             <p>{item.answer}</p>
           </details>
         ))}
