@@ -49,5 +49,6 @@ export const navItems = [
   { href: "/catalog/", label: "Каталог и цены" },
   { href: "/dostavka/", label: "Доставка" },
   { href: "/primery-rabot/", label: "Примеры работ" },
+  { href: "/#reviews", label: "Отзывы" },
   { href: "/kontakty/", label: "Контакты" }
 ];

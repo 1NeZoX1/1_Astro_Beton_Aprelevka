@@ -1,5 +1,48 @@
 ---
 import { navItems, site } from "@lib/site";
+
+const popularFooterLinks = [
+  { href: "/catalog/beton/", label: "Бетон" },
+  { href: "/catalog/beton/?sub=granit", label: "Бетон на граните" },
+  { href: "/catalog/beton/?sub=tovarnyy-beton", label: "Товарный бетон" },
+  { href: "/catalog/beton-s-pmd/", label: "Бетон с ПМД" },
+  { href: "/catalog/fibrobeton/", label: "Фибробетон" },
+  { href: "/catalog/keramzitobeton/", label: "Керамзитобетон" },
+  { href: "/catalog/rastvory-i-cps/", label: "Растворы и ЦПС" },
+  { href: "/catalog/arenda-tehniki/", label: "Аренда техники" },
+  { href: "/dostavka/", label: "Доставка бетона" },
+  { href: "/primery-rabot/", label: "Примеры работ" }
+];
+
+const concreteSubcategoryLinks = [
+  { href: "/catalog/beton/?sub=granit", label: "Бетон на граните" },
+  { href: "/catalog/beton/?sub=graviy", label: "Бетон на гравии" },
+  { href: "/catalog/beton/?sub=tovarnyy-beton", label: "Товарный бетон" },
+  { href: "/catalog/beton/?sub=gidrotehnicheskiy-beton", label: "Гидротехнический бетон" },
+  { href: "/catalog/beton/?sub=toschiy-beton", label: "Тощий бетон" }
+];
+
+const mortarSubcategoryLinks = [
+  { href: "/catalog/beton-s-pmd/?pmd=5", label: "Бетон с ПМД-5" },
+  { href: "/catalog/beton-s-pmd/?pmd=10", label: "Бетон с ПМД-10" },
+  { href: "/catalog/beton-s-pmd/?pmd=15", label: "Бетон с ПМД-15" },
+  { href: "/catalog/rastvory-i-cps/montazhnyy-rastvor-m100/", label: "Раствор М100" },
+  { href: "/catalog/rastvory-i-cps/montazhnyy-rastvor-m150/", label: "Раствор М150" },
+  { href: "/catalog/rastvory-i-cps/montazhnyy-rastvor-m200/", label: "Раствор М200" },
+  { href: "/catalog/rastvory-i-cps/tsps-1-6-m100/", label: "ЦПС" }
+];
+
+const concreteMarkLinks = [
+  { href: "/catalog/beton/beton-tovarnyy-b7-5-m100/", label: "Бетон М100" },
+  { href: "/catalog/beton/beton-tovarnyy-b12-5-m150/", label: "Бетон М150" },
+  { href: "/catalog/beton/beton-tovarnyy-b15-m200/", label: "Бетон М200" },
+  { href: "/catalog/beton/beton-tovarnyy-b20-m250/", label: "Бетон М250" },
+  { href: "/catalog/beton/beton-tovarnyy-b22-5-m300/", label: "Бетон М300" },
+  { href: "/catalog/beton/beton-tovarnyy-b25-m350/", label: "Бетон М350" },
+  { href: "/catalog/beton/beton-tovarnyy-b30-m400/", label: "Бетон М400" },
+  { href: "/catalog/beton/beton-tovarnyy-b35-m450/", label: "Бетон М450" },
+  { href: "/catalog/beton/beton-tovarnyy-b40-m500/", label: "Бетон М500" }
+];
 ---
 
 <footer class="site-footer">
@@ -18,6 +61,38 @@ import { navItems, site } from "@lib/site";
       <h3>Разделы</h3>
       {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
       <a href="/politika-konfidentsialnosti/">Политика конфиденциальности</a>
+    </nav>
+
+    <nav class="footer-popular" aria-label="Популярные разделы каталога">
+      <h3>Популярные разделы</h3>
+      <div class="footer-popular-links">
+        {popularFooterLinks.map((item) => <a href={item.href}>{item.label}</a>)}
+      </div>
+    </nav>
+
+    <nav class="footer-subcategories" aria-label="Популярные подкатегории каталога">
+      <h3>Популярные подкатегории</h3>
+      <div class="footer-link-groups">
+        <div class="footer-link-group">
+          <p class="footer-link-group-title">Бетон</p>
+          <div class="footer-seo-links">
+            {concreteSubcategoryLinks.map((item) => <a href={item.href}>{item.label}</a>)}
+          </div>
+        </div>
+        <div class="footer-link-group">
+          <p class="footer-link-group-title">ПМД и растворы</p>
+          <div class="footer-seo-links">
+            {mortarSubcategoryLinks.map((item) => <a href={item.href}>{item.label}</a>)}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <nav class="footer-marks" aria-label="Марки бетона">
+      <h3>Марки бетона</h3>
+      <div class="footer-seo-links">
+        {concreteMarkLinks.map((item) => <a href={item.href}>{item.label}</a>)}
+      </div>
     </nav>
 
     <div class="footer-contacts">
