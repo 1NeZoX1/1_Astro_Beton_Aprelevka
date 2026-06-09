@@ -22,8 +22,8 @@ const {
 } = Astro.props;
 
 const pageTitle = title === site.title ? title : `${title} | ${site.name}`;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://example.com").toString();
-const ogImage = new URL(image, Astro.site ?? "https://example.com").toString();
+const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://beton-zavod-aprelevka.ru").toString();
+const ogImage = new URL(image, Astro.site ?? "https://beton-zavod-aprelevka.ru").toString();
 
 const commonStructuredData = [
   {
@@ -45,7 +45,7 @@ const commonStructuredData = [
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: site.name,
-    url: new URL("/", Astro.site ?? "https://example.com").toString()
+    url: new URL("/", Astro.site ?? "https://beton-zavod-aprelevka.ru").toString()
   }
 ];
 ---

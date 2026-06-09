@@ -149,7 +149,7 @@ const catalogFilterPanels = getCatalogFilterPanels(category.slug, category.produ
 const hasCatalogFilters = catalogFilterPanels.length > 1;
 const catalogFilterParam = isPmdCategory ? "pmd" : isConcreteCategory ? "sub" : "";
 const sortedCategoryProducts = catalogFilterPanels[0].products;
-const canonicalBase = Astro.site ?? "https://example.com";
+const canonicalBase = Astro.site ?? "https://beton-zavod-aprelevka.ru";
 const crumbs = [
   { label: "Главная", href: "/" },
   { label: "Каталог", href: "/catalog/" },
